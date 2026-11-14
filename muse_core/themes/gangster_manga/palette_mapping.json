@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "theme": "gangster_manga",
+  "base_engine": "Muse by Rihanna",
+  "principle": "Genre interpretation only. Never mutate the core palette or treat a symbolic reading as objective truth.",
+  "colors": {
+    "black": {
+      "muse_default": "void, potential, the unformed, night, death before rebirth",
+      "gangster_manga": "the organization, the contract, inherited silence, power that does not need to be seen"
+    },
+    "red": {
+      "muse_default": "passion, violence, blood, life force, sacrifice, warning",
+      "gangster_manga": "blood debt, irreversible action, loyalty tested under pressure, the point of no return"
+    },
+    "gold": {
+      "muse_default": "achievement, the sun, the divine, the prize, the false prize",
+      "gangster_manga": "money, rank, public prestige, bought legitimacy, the false crown"
+    },
+    "grey": {
+      "muse_default": "ambiguity, boredom, the in-between, the not-yet-chosen",
+      "gangster_manga": "complicity, informant uncertainty, compromised institutions, loyalty without certainty"
+    },
+    "white": {
+      "muse_default": "purity, revelation, clarity, the blank page, the shroud",
+      "gangster_manga": "clean reputation, public respectability, erased evidence, the lie of innocence"
+    },
+    "violet": {
+      "muse_default": "spirit, royalty, transformation, the crown, the last threshold",
+      "gangster_manga": "succession, contested sovereignty, the cost of becoming the boss"
+    }
+  },
+  "lights": {
+    "neon": {
+      "muse_default": "artificiality, modern alienation, the false promise, the city",
+      "gangster_manga": "night territory, clubs, storefront fronts, deals staged as spectacle"
+    },
+    "shadow": {
+      "muse_default": "the unacknowledged, the repressed, the shape without a source",
+      "gangster_manga": "hidden hierarchy, surveillance, unseen labor, power behind the visible boss"
+    },
+    "total dark": {
+      "muse_default": "oblivion, surrender, the erasure, the rest before the rise",
+      "gangster_manga": "betrayal, disappearance, the instant a character loses their old identity"
+    },
+    "dawn": {
+      "muse_default": "beginning, hope, revelation, the thing that could not wait",
+      "gangster_manga": "aftermath, temporary safety, the city reopening before the debt is settled"
+    },
+    "fluorescent": {
+      "muse_default": "sterility, the institution, the modern, the exposed",
+      "gangster_manga": "police rooms, hospitals, offices, institutional scrutiny"
+    }
+  },
+  "thoughts": {
+    "guilt": {
+      "muse_default": "the debt that cannot be paid",
+      "gangster_manga": "a debt no promotion or payment can cancel"
+    },
+    "shame": {
+      "muse_default": "the self turning against itself",
+      "gangster_manga": "fear of being seen as weak, disloyal, or disposable"
+    },
+    "fear": {
+      "muse_default": "the body's anticipation of harm",
+      "gangster_manga": "anticipation of retaliation and the cost of silence"
+    },
+    "resolve": {
+      "muse_default": "the will hardening into action",
+      "gangster_manga": "a decision to protect, defect, inherit, or dismantle the organization"
+    },
+    "rage": {
+      "muse_default": "the energy that burns its container",
+      "gangster_manga": "violence threatening to destroy the family or crew it claims to defend"
+    }
+  },
+  "symbols": {
+    "door": {
+      "muse_default": "threshold, choice, the irreversible step",
+      "gangster_manga": "initiation, recruitment, betrayal, crossing into complicity"
+    },
+    "serpent": {
+      "muse_default": "knowledge, temptation, healing, the coiled threat",
+      "gangster_manga": "internal poison, informant suspicion, strategic betrayal"
+    },
+    "crown": {
+      "muse_default": "authority, the price of rule, the false or true sovereign",
+      "gangster_manga": "the boss's seat, succession, authority as a burden rather than a prize"
+    },
+    "mask": {
+      "muse_default": "the performed self, the hidden face, the social contract",
+      "gangster_manga": "street persona versus private self, code-switching, public myth"
+    },
+    "wound": {
+      "muse_default": "the injury that shapes the self, the unhealed, the proof",
+      "gangster_manga": "the bodily and moral cost of loyalty, a debt carried forward"
+    },
+    "mirror": {
+      "muse_default": "identity, reflection, the double, the truth that looks back",
+      "gangster_manga": "seeing the next generation repeat the same violence"
+    },
+    "key": {
+      "muse_default": "access, the answer, the thing that opens or locks",
+      "gangster_manga": "access to rooms, secrets, ledgers, and protected truths"
+    },
+    "bridge": {
+      "muse_default": "transition, the span between states, the risk of crossing",
+      "gangster_manga": "territory boundary, ceasefire, migration, a route with a price"
+    }
+  }
+}

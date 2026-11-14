@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MUSE-GM Writer's Room</title>
+<style>
+:root{font-family:system-ui,sans-serif;color-scheme:dark light}
+body{max-width:980px;margin:0 auto;padding:1.2rem}
+header{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#log{min-height:45vh;border:1px solid #8888;border-radius:12px;padding:1rem;margin:1rem 0;overflow-wrap:anywhere}
+article{padding:.7rem;margin:.5rem 0;border-radius:9px;background:#8881;white-space:pre-wrap}
+article.user{border-left:4px solid #579}
+article.assistant{border-left:4px solid #698}
+article.system{border-left:4px solid #b85}
+form{display:flex;gap:.6rem;align-items:stretch}
+textarea{flex:1;min-height:4rem;padding:.7rem;font:inherit}
+button,a{font:inherit;padding:.6rem .9rem;border-radius:8px}
+.surface{border:1px solid #8888;border-radius:10px;padding:.8rem;margin:.6rem 0}
+small{opacity:.8}
+</style>
+</head>
+<body>
+<header><div><h1>MUSE-GM Writer's Room</h1><p>Research-led premise development with human approval gates.</p></div>
+<a href="/codec">Realm of Quant audio codec downloads</a></header>
+<p><small>Local-only server recommended: http://127.0.0.1:8484. Chat requires ANTHROPIC_API_KEY in the server environment.</small></p>
+<div id="log" aria-live="polite"></div>
+<form id="chat"><textarea id="message" maxlength="20000" placeholder="Describe the story world or ask the Muse-GM assistant…" required></textarea><button id="send" type="submit">Send</button></form>
+<p><button id="reset" type="button">Reset session</button></p>
+<script>
+(() => {
+ const sidKey="muse-gm-session";
+ let sid=sessionStorage.getItem(sidKey);
+ if(!sid){sid=crypto.randomUUID().replaceAll("-","");sessionStorage.setItem(sidKey,sid);}
+ const log=document.getElementById("log"), form=document.getElementById("chat"), msg=document.getElementById("message"), send=document.getElementById("send");
+ const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
+ function render(state){
+   log.replaceChildren();
+   for(const item of (state.ui||[])){
+     if(item.type==="surface"){
+       const wrap=el("section","surface","Ranking surface "+item.id+" · profile "+item.profile);
+       for(const row of item.rows||[]){
+         const line=el("div","","");
+         const info=el("p","",row.effect+" · score "+Number(row.score).toFixed(4)+" · "+JSON.stringify(row.config));
+         const approve=el("button","", "Approve this configuration");
+         approve.type="button";approve.addEventListener("click",()=>post("/api/approve",{row_id:row.row_id}));
+         line.append(info,approve);wrap.append(line);
+       }
+       log.append(wrap);
+     } else {
+       const cls=["user","assistant","system"].includes(item.type)?item.type:"system";
+       log.append(el("article",cls,item.text||""));
+     }
+   }
+   log.scrollTop=log.scrollHeight;
+ }
+ async function state(){
+   const r=await fetch("/api/state?session="+encodeURIComponent(sid));
+   const data=await r.json();if(!r.ok)throw new Error(data.error||"State request failed");render(data);
+ }
+ async function post(path,payload){
+   send.disabled=true;
+   try{
+     const r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json","X-MUSE":"1"},body:JSON.stringify({session:sid,...payload})});
+     const data=await r.json();if(!r.ok)throw new Error(data.error||"Request failed");render(data);
+   }catch(e){log.append(el("article","system","Error: "+e.message));}
+   finally{send.disabled=false;}
+ }
+ form.addEventListener("submit",async e=>{e.preventDefault();const text=msg.value.trim();if(!text)return;msg.value="";await post("/api/chat",{message:text});});
+ document.getElementById("reset").addEventListener("click",async()=>{await post("/api/reset",{});sessionStorage.removeItem(sidKey);location.reload();});
+ state().catch(e=>log.append(el("article","system","Unable to load session: "+e.message)));
+})();
+</script>
+</body></html>
