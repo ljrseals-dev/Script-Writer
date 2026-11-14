@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "default_language": "en",
+  "stages": [
+    {
+      "key": "ordinary_world",
+      "name": "The Ordinary World",
+      "prompts": {
+        "en": [
+          "What does the protagonist believe about their place in the crew or family? Which part of that identity was taught to them? What private ritual contradicts the public code?"
+        ],
+        "zh-Hans": "主角相信自己在帮派或家族中的位置是什么？这种身份有哪一部分是别人灌输的？哪种私人习惯与公开守则相矛盾？",
+        "es": "¿Qué cree el protagonista sobre su lugar en la banda o la familia? ¿Qué parte de esa identidad le enseñaron? ¿Qué ritual privado contradice el código público?",
+        "ja": "主人公は組織や家族の中で自分をどんな存在だと思っているか。その自己像のどこを他人に教え込まれたのか。公の掟と矛盾する私的な習慣は何か。",
+        "fr": "Que croit le protagoniste de sa place dans le clan ou la famille ? Quelle part de cette identité lui a été inculquée ? Quel rituel privé contredit le code public ?"
+      }
+    },
+    {
+      "key": "inciting_incident",
+      "name": "The Inciting Incident",
+      "prompts": {
+        "en": [
+          "Who witnesses the event that breaks the balance? What new position does it assign the protagonist in the hierarchy, and whose debt begins here?"
+        ],
+        "zh-Hans": "谁目睹了打破平衡的事件？它把主角放进了等级体系中的什么位置，又从此欠下了谁的人情或债？",
+        "es": "¿Quién presencia el hecho que rompe el equilibrio? ¿Qué lugar nuevo ocupa el protagonista en la jerarquía y qué deuda nace?",
+        "ja": "均衡を崩す出来事を誰が目撃したのか。それによって主人公の序列はどう変わり、誰への借りが生まれるのか。",
+        "fr": "Qui voit l'événement qui rompt l'équilibre ? Quelle place nouvelle donne-t-il au protagoniste dans la hiérarchie, et quelle dette commence ici ?"
+      }
+    },
+    {
+      "key": "rising_action",
+      "name": "The Rising Action",
+      "prompts": {
+        "en": [
+          "What does each promotion, favor, or act of protection cost? Which ally becomes an obstacle, and which rival understands the protagonist more clearly than family does?"
+        ],
+        "zh-Hans": "每一次晋升、帮忙或保护要付出什么代价？哪个盟友变成阻碍，哪个对手反而比家人更理解主角？",
+        "es": "¿Qué cuesta cada ascenso, favor o acto de protección? ¿Qué aliado se vuelve obstáculo y qué rival comprende mejor al protagonista que su familia?",
+        "ja": "昇進、恩義、保護にはどんな代償があるのか。味方から障害になる人物は誰か。家族より主人公を理解する敵は誰か。",
+        "fr": "Quel est le prix de chaque promotion, faveur ou protection ? Quel allié devient un obstacle, et quel rival comprend mieux le protagoniste que sa famille ?"
+      }
+    },
+    {
+      "key": "first_climax",
+      "name": "The First Climax — False Victory",
+      "prompts": {
+        "en": [
+          "What visible victory makes the protagonist feel untouchable: territory, revenge, money, recognition, or succession? What symbol marks the false crown?"
+        ],
+        "zh-Hans": "哪一种显眼的胜利让主角觉得自己不可战胜：地盘、复仇、金钱、认可还是继承权？哪个符号代表这顶虚假的王冠？",
+        "es": "¿Qué victoria visible lo hace sentirse intocable: territorio, venganza, dinero, reconocimiento o sucesión? ¿Qué símbolo marca la corona falsa?",
+        "ja": "縄張り、復讐、金、承認、跡目のうち、どの勝利が主人公を無敵だと思わせるのか。偽りの王冠を示す象徴は何か。",
+        "fr": "Quelle victoire visible le rend invincible à ses propres yeux : territoire, vengeance, argent, reconnaissance ou succession ? Quel symbole marque la fausse couronne ?"
+      }
+    },
+    {
+      "key": "fall",
+      "name": "The Fall",
+      "prompts": {
+        "en": [
+          "Which hidden cost of the victory becomes public? What does the organization take from the protagonist, and who pays for a decision they did not make?"
+        ],
+        "zh-Hans": "胜利隐藏的哪种代价终于曝光？组织从主角身上夺走了什么？谁替一个并非自己做出的决定付出了代价？",
+        "es": "¿Qué coste oculto de la victoria sale a la luz? ¿Qué le quita la organización y quién paga una decisión ajena?",
+        "ja": "勝利の隠れた代償の何が表面化するのか。組織は主人公から何を奪い、他人の決断の代償を誰が払うのか。",
+        "fr": "Quel coût caché de la victoire devient visible ? Que lui prend l'organisation, et qui paie pour une décision qu'il n'a pas prise ?"
+      }
+    },
+    {
+      "key": "dark_night",
+      "name": "The Dark Night",
+      "prompts": {
+        "en": [
+          "When the hierarchy offers no protection, what remains of the protagonist's identity? Which loyalty survives when status, money, and fear are removed?"
+        ],
+        "zh-Hans": "当等级制度不再提供保护时，主角的身份还剩下什么？当地位、金钱和恐惧被剥去，哪一种忠诚仍然存在？",
+        "es": "Cuando la jerarquía deja de protegerlo, ¿qué queda de su identidad? ¿Qué lealtad sobrevive sin estatus, dinero ni miedo?",
+        "ja": "序列が守ってくれなくなったとき、主人公の自己像には何が残るのか。地位、金、恐怖を取り除いても残る忠誠は何か。",
+        "fr": "Quand la hiérarchie ne protège plus le protagoniste, que reste-t-il de son identité ? Quelle loyauté survit sans statut, argent ni peur ?"
+      }
+    },
+    {
+      "key": "second_climax",
+      "name": "The Second Climax — True Choice",
+      "prompts": {
+        "en": [
+          "What choice cannot be solved by the organization's code? Does the protagonist leave, expose, betray, forgive, or become the thing they once opposed? What is the irreversible cost?"
+        ],
+        "zh-Hans": "哪一个选择无法用组织的规矩解决？主角会离开、揭露、背叛、宽恕，还是变成曾经反对的人？不可逆的代价是什么？",
+        "es": "¿Qué elección no puede resolverse con el código de la organización? ¿Se marcha, revela, traiciona, perdona o se convierte en aquello que combatía? ¿Cuál es el coste irreversible?",
+        "ja": "組織の掟では解決できない選択は何か。去るのか、暴くのか、裏切るのか、赦すのか、それともかつて憎んだ存在になるのか。取り返しのつかない代償は何か。",
+        "fr": "Quel choix échappe au code de l'organisation ? Partir, révéler, trahir, pardonner ou devenir ce qu'il combattait ? Quel est le coût irréversible ?"
+      }
+    },
+    {
+      "key": "falling_action",
+      "name": "The Falling Action",
+      "prompts": {
+        "en": [
+          "Who lives with the consequences after the decisive choice? Which relationship cannot return to its former shape, and what recurring image changes meaning?"
+        ],
+        "zh-Hans": "决定之后，谁必须承受后果？哪段关系无法恢复原状？哪个反复出现的意象改变了含义？",
+        "es": "¿Quién vive con las consecuencias después de la decisión? ¿Qué relación no puede volver a ser igual y qué imagen recurrente cambia de sentido?",
+        "ja": "決断の後、誰が結果を背負うのか。元に戻らない関係は何か。繰り返されるイメージはどう意味を変えるのか。",
+        "fr": "Qui vit avec les conséquences après le choix décisif ? Quelle relation ne peut retrouver sa forme passée, et quelle image récurrente change de sens ?"
+      }
+    },
+    {
+      "key": "resolution",
+      "name": "The Resolution",
+      "prompts": {
+        "en": [
+          "What order replaces the old order, if any? What does the protagonist refuse to inherit? Which symbol returns, now carrying a different meaning?"
+        ],
+        "zh-Hans": "如果旧秩序结束，什么新秩序取而代之？主角拒绝继承什么？哪个符号再次出现，却有了不同含义？",
+        "es": "¿Qué orden sustituye al antiguo, si existe? ¿Qué se niega a heredar el protagonista? ¿Qué símbolo regresa con otro significado?",
+        "ja": "古い秩序に代わるものはあるのか。主人公が継承を拒むものは何か。別の意味を帯びて戻る象徴は何か。",
+        "fr": "Quel ordre remplace l'ancien, s'il y en a un ? Que refuse d'hériter le protagoniste ? Quel symbole revient avec un sens nouveau ?"
+      }
+    }
+  ]
+}

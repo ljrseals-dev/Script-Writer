@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Realm of Quant — Audio Codec Downloads</title>
+<style>
+:root{color-scheme:dark light;font-family:system-ui,sans-serif}
+body{max-width:860px;margin:0 auto;padding:2rem 1.2rem;line-height:1.55}
+main{border:1px solid #8886;border-radius:14px;padding:1.4rem}
+h1{line-height:1.15}
+.download{display:block;padding:1rem;margin:1rem 0;border:1px solid #8888;border-radius:10px;text-decoration:none}
+small,.muted{opacity:.78}
+code{overflow-wrap:anywhere}
+.notice{border-left:4px solid #b88;padding:.7rem 1rem;background:#8881}
+</style>
+</head>
+<body>
+<main>
+<p><a href="/">← Back to MUSE-GM chatbot</a></p>
+<h1>Realm of Quant: 24 kHz audio codec</h1>
+<p>Download the upstream FP16 ONNX encoder and decoder individually. Downloads start only when you choose a link; this page never fetches model weights automatically.</p>
+<section>
+<h2>Model files</h2>
+<a class="download" href="https://huggingface.co/onnx-community/dac_24khz-ONNX/resolve/4b180296388b0cebdca8191db999e87b03cd7a95/onnx/encoder_model_fp16.onnx">
+<strong>Download encoder_model_fp16.onnx</strong><br>
+<small>Encoder · approximately 45.6 MB · SHA-256 <code>7f985f37236fa5ef581285bd9644f372c06e74bd4767cfb524ee94558228343d</code></small>
+</a>
+<a class="download" href="https://huggingface.co/onnx-community/dac_24khz-ONNX/resolve/4b180296388b0cebdca8191db999e87b03cd7a95/onnx/decoder_model_fp16.onnx">
+<strong>Download decoder_model_fp16.onnx</strong><br>
+<small>Decoder · approximately 105.9 MB · SHA-256 <code>adf016cf402816d0639fe3cd791580f85e48980259a6f3e3c4993c5a2d661ff8</code></small>
+</a>
+</section>
+<div class="notice">
+<strong>Important:</strong> These are audio-codec models, not chatbot language encoders or text tokenizers. The MUSE-GM app currently provides downloads and research context only; it does not run ONNX inference or process audio.
+</div>
+<h2>Performance caveat</h2>
+<p>The Realm of Quant report measured single-thread WASM on a 2-vCPU server and reported RTF 1.43 for the encoder and 3.16 for the decoder. Both were slower than realtime in that test. WebGPU and mobile performance were not measured. Both model files together are about 151.5 MB on the wire, with substantially higher reported browser memory use.</p>
+<h2>Credit and provenance</h2>
+<p>Realm of Quant preprint author: <strong>Lewis James Seals Jr.</strong></p>
+<p>Requested research acknowledgement: <strong>Adonna Seals</strong>. This acknowledgement is included at the project maintainer's request; her specific contribution is not independently detailed in the preprint's current author-contributions section.</p>
+<p>Source: <a href="https://github.com/ljrseals-dev/realm-quant">ljrseals-dev/realm-quant</a> · Upstream model: <a href="https://huggingface.co/onnx-community/dac_24khz-ONNX">onnx-community/dac_24khz-ONNX</a>.</p>
+<p class="muted">Model weights remain hosted by the upstream publisher. Check their current license and terms before redistribution or bundling.</p>
+</main>
+</body>
+</html>
