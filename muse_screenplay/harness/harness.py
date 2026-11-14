@@ -40,7 +40,7 @@ def criteria_fingerprint(evaluator=None, tests=None, criteria_spec=None) -> str:
     payload = {
         "evaluator": _callable_fingerprint(evaluator),
         "tests": [
-            {"name": test.name, "fn": _callable_fingerprint(test.fn),
+            {"name": test.name, "predicate": _callable_fingerprint(test.predicate),
              "level": test.level.value, "message": test.message}
             for test in (tests or [])
         ],

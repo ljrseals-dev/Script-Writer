@@ -20,3 +20,9 @@ def test_callable_fingerprint_limitations_are_disclosed():
     assert "closure values" in CRITERIA_FINGERPRINT_LIMITATIONS
     event = AuditEvent("mutation", "a", "criteria changed")
     assert event.limitations
+
+def test_test_predicates_are_part_of_criteria_fingerprint():
+    from muse_screenplay.harness import TestCase, ConstraintLevel, criteria_fingerprint
+    first = TestCase("check", lambda value: bool(value), ConstraintLevel.ASSERT)
+    second = TestCase("check", lambda value: value == "expected", ConstraintLevel.ASSERT)
+    assert criteria_fingerprint(tests=[first]) != criteria_fingerprint(tests=[second])
