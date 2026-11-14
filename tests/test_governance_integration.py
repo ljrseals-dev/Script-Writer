@@ -37,10 +37,11 @@ def test_criteria_only_mutation_is_detected():
     assert changed.criteria_version == artifact.criteria_version + 1
 
 def test_remote_failure_metadata_is_explicit(monkeypatch):
-    import datasets
+    import sys
+    from types import SimpleNamespace
     def fail(*args, **kwargs):
         raise OSError("network unavailable")
-    monkeypatch.setattr(datasets, "load_dataset", fail)
+    monkeypatch.setitem(sys.modules, "datasets", SimpleNamespace(load_dataset=fail))
     dataset = load_eval_dataset("movies", limit=1)
     assert dataset.boundary.dataset_source is DatasetProvenance.FALLBACK
     assert "network unavailable" in dataset.boundary.fallback_reason
