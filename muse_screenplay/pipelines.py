@@ -60,7 +60,7 @@ class ScreenplayPipeline:
 def build_genre_conditioned_prompt(prompt, genre, tone=None):
     return (
         f"[GENRE: {genre.upper()}]"
-        + (f" [TONE: {tone.upper()}" if tone else "")
+        + (f" [TONE: {tone.upper()}]" if tone else "")
         + "\n\n"
         + prompt
     )
