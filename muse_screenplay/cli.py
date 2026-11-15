@@ -16,7 +16,7 @@ def _artifact(a):
  return build_script_artifact(a.model,max_length=getattr(a,"max_length",None),temperature=getattr(a,"temperature",None),top_p=getattr(a,"top_p",None))
 def cmd_generate(a):
  from .harness import ArtifactHarness
- art=_artifact(a);r=ArtifactHarness("muse_cli").execute(art,{"prompt":a.prompt})
+ art=_artifact(a);r=ArtifactHarness("muse_cli").execute(art,{"prompt":a.prompt,"target_language":a.target_language})
  if a.json:_print({"artifact":art.to_dict(),"passed":r.passed,"duration_ms":r.duration_ms,"output":r.value,"error":r.error,"tests":[{"name":t.name,"passed":t.passed,"message":t.message} for t in r.test_results]})
  elif r.error:print(r.error,file=sys.stderr)
  else:print(r.value)
@@ -29,7 +29,7 @@ def cmd_evaluate(a):
  return 0 if run.pass_rate>=a.min_pass_rate else 1
 def cmd_optimize(a):
  from .harness import ArtifactHarness
- art=_artifact(a);ds=load_eval_dataset(a.dataset,a.limit);h=ArtifactHarness("muse_cli");best,run=h.optimize(art,ds,rounds=a.rounds)
+ art=_artifact(a);ds=load_eval_dataset(a.dataset,a.limit,target_language=a.target_language);h=ArtifactHarness("muse_cli");best,run=h.optimize(art,ds,rounds=a.rounds)
  if a.json:_print({"baseline":art.to_dict(),"best":best.to_dict(),"mean_score":run.mean_score,"pass_rate":run.pass_rate,"log":h.log})
  else:print(f"best version={best.version} score={run.mean_score:.4f} pass_rate={run.pass_rate:.2%}")
  return 0
