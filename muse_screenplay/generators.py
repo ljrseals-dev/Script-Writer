@@ -1,6 +1,7 @@
 """Lazy, weights-only Transformers loader with explicit language provenance."""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+import json
 import os
 import re
 from typing import Any
@@ -86,6 +87,24 @@ class Generator:
     def task(self):
         return self.spec.task
 
+    def _record_remote_code_rejection(self, source):
+        from .governance import GovernanceLedger
+        ledger = GovernanceLedger(
+            os.environ.get("MUSE_PROVENANCE_LEDGER", ".muse/ledger.jsonl")
+        )
+        ledger.append(
+            "model_load_rejected_remote_code",
+            self.spec.key,
+            datetime.now(timezone.utc).isoformat(),
+            {
+                "architecture_status": "requires-remote-code",
+                "load_status": "not-loaded",
+                "remote_code_policy": "disabled",
+                "trust_remote_code": False,
+                "rejection_source": source,
+            },
+        )
+
     def _load(self):
         if self._model is not None:
             return
@@ -108,10 +127,32 @@ class Generator:
         common = {key: value for key, value in common.items() if value is not None}
         config = AutoConfig.from_pretrained(self.spec.hf_id, **common)
         if getattr(config, "auto_map", None):
+            self._record_remote_code_rejection("model_config.auto_map")
             raise RuntimeError(
                 f"architecture: requires-remote-code — not loaded under weights-only policy ({self.spec.hf_id})"
             )
-        self._tokenizer = AutoTokenizer.from_pretrained(self.spec.hf_id, **common)
+        # Tokenizer custom code is a separate execution surface from model architecture.
+        try:
+            from huggingface_hub import hf_hub_download
+            from huggingface_hub.errors import EntryNotFoundError
+            tokenizer_config_path = hf_hub_download(
+                self.spec.hf_id, filename="tokenizer_config.json",
+                revision=self.spec.revision,
+            )
+            with open(tokenizer_config_path, encoding="utf-8") as stream:
+                tokenizer_config = json.load(stream)
+        except EntryNotFoundError:
+            tokenizer_config = {}
+        if tokenizer_config.get("auto_map"):
+            self._record_remote_code_rejection("tokenizer_config.auto_map")
+            raise RuntimeError(
+                f"architecture: requires-remote-code — tokenizer custom code not loaded ({self.spec.hf_id})"
+            )
+        self._tokenizer = AutoTokenizer.from_pretrained(
+            self.spec.hf_id, trust_remote_code=False, **{
+                key: value for key, value in common.items() if key != "trust_remote_code"
+            }
+        )
         model_cls = (
             AutoModelForSeq2SeqLM
             if self.task in {"text2text-generation", "summarization"}
@@ -220,6 +261,8 @@ class Generator:
             "trust_remote_code": False,
             "use_safetensors": True,
             "legacy_bin_policy": "explicit torch_load(map_location='cpu', weights_only=True) only",
+            "architecture_policy": "built-in Transformers architecture only; auto_map rejected",
+            "language_detection": "langdetect seeded; confidence >= 0.85 else unverified",
             "language": {
                 "declared": self.spec.languages,
                 "tokenizer_languages": self.spec.tokenizer_languages,
