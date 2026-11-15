@@ -1,5 +1,7 @@
 """Lazy, weights-only Transformers loader with explicit language provenance."""
 from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+import os
 import re
 from typing import Any
 
@@ -22,7 +24,7 @@ def torch_load_safe(path: str):
 
 
 def _detect_language(text: str) -> str:
-    """Best-effort language detector; absence or uncertainty is explicit."""
+    """Best-effort detector; absence or uncertainty is explicit."""
     try:
         from langdetect import detect
         return detect(text) if text.strip() else "unverified"
@@ -31,7 +33,9 @@ def _detect_language(text: str) -> str:
 
 
 def _validate_language(target_language):
-    if not isinstance(target_language, str) or not re.fullmatch(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*", target_language):
+    if not isinstance(target_language, str) or not re.fullmatch(
+        r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*", target_language
+    ):
         raise ValueError("target_language is required and must be a BCP-47-style language tag")
     return target_language
 
@@ -85,7 +89,9 @@ class Generator:
                 AutoConfig, AutoModelForCausalLM, AutoModelForSeq2SeqLM, AutoTokenizer
             )
         except ImportError as exc:
-            raise RuntimeError('transformers is not installed or PyTorch is unavailable; run pip install -e ".[models]"') from exc
+            raise RuntimeError(
+                'transformers is not installed or PyTorch is unavailable; run pip install -e ".[models]"'
+            ) from exc
 
         settings.apply_environment()
         common = {
@@ -95,49 +101,56 @@ class Generator:
         }
         common = {key: value for key, value in common.items() if value is not None}
         config = AutoConfig.from_pretrained(self.spec.hf_id, **common)
-        auto_map = getattr(config, "auto_map", None)
-        if auto_map:
+        if getattr(config, "auto_map", None):
             raise RuntimeError(
                 f"architecture: requires-remote-code — not loaded under weights-only policy ({self.spec.hf_id})"
             )
         self._tokenizer = AutoTokenizer.from_pretrained(self.spec.hf_id, **common)
-        model_cls = AutoModelForSeq2SeqLM if self.task in {"text2text-generation", "summarization"} else AutoModelForCausalLM
+        model_cls = (
+            AutoModelForSeq2SeqLM
+            if self.task in {"text2text-generation", "summarization"}
+            else AutoModelForCausalLM
+        )
         try:
             self._model = model_cls.from_pretrained(
-                self.spec.hf_id, config=config, use_safetensors=True,
-                trust_remote_code=False, revision=self.spec.revision,
+                self.spec.hf_id,
+                config=config,
+                use_safetensors=True,
+                trust_remote_code=False,
+                revision=self.spec.revision,
             )
             weight_format = "safetensors"
         except (OSError, ValueError) as safe_error:
-            # Explicit legacy .bin path only. No implicit Transformers pickle fallback.
+            # No implicit Transformers pickle fallback: .bin is an explicit safe path.
             try:
                 from huggingface_hub import hf_hub_download
-                import os
+
                 weight_path = hf_hub_download(
-                    self.spec.hf_id, filename="pytorch_model.bin",
+                    self.spec.hf_id,
+                    filename="pytorch_model.bin",
                     revision=self.spec.revision,
                 )
                 state = torch_load_safe(weight_path)
                 self._model = model_cls.from_config(config)
-                if isinstance(state, dict) and "state_dict" in state and isinstance(state["state_dict"], dict):
+                if isinstance(state, dict) and isinstance(state.get("state_dict"), dict):
                     state = state["state_dict"]
                 self._model.load_state_dict(state, strict=True)
                 weight_format = "pytorch-bin-weights-only"
-            except Exception as unsafe_or_missing:
+            except Exception as safe_load_error:
                 raise RuntimeError(
                     "No loadable safetensors artifact was available and the explicit "
-                    f"weights_only=True .bin path failed: {unsafe_or_missing}"
+                    f"weights_only=True .bin path failed: {safe_load_error}"
                 ) from safe_error
-        device = settings.resolve_device() if self.device == "auto" else self.device
+
+        self._device = settings.resolve_device() if self.device == "auto" else self.device
         self._torch = torch
-        self._model.to(device)
+        self._model.to(self._device)
         self._model.eval()
-        self._device = device
         self._weight_format = weight_format
 
     @property
     def pipeline(self):
-        # Compatibility property: return this generator, not an unsafe HF pipeline.
+        """Compatibility property returning this safe generator, never an HF pipeline."""
         self._load()
         return self
 
@@ -145,28 +158,49 @@ class Generator:
         target = _validate_language(target_language)
         self._load()
         input_language = _detect_language(prompt)
-        language_mismatch = None if input_language == "unverified" else input_language != target.split("-")[0].lower()
-        if language_mismatch:
-            # Record only; never translate or rewrite the user's prompt.
-            pass
+        language_mismatch = (
+            None
+            if input_language == "unverified"
+            else input_language != target.split("-")[0].lower()
+        )
+        # A mismatch is diagnostic only; the original prompt is passed unchanged.
         inputs = self._tokenizer(prompt, return_tensors="pt")
         inputs = {key: value.to(self._device) for key, value in inputs.items()}
         kwargs = self.generation.to_kwargs()
         kwargs.update({key: value for key, value in overrides.items() if value is not None})
-        kwargs.pop("max_length", None) if kwargs.get("max_new_tokens") is not None else None
+        if kwargs.get("max_new_tokens") is not None:
+            kwargs.pop("max_length", None)
         with self._torch.inference_mode():
             output = self._model.generate(**inputs, **kwargs)
-        text = self._tokenizer.decode(output[0], skip_special_tokens=True).strip()
-        if self.task == "text-generation" and text.startswith(prompt):
-            text = text[len(prompt):].strip() or text
-        generated_in = _detect_language(text)
+        generated_text = self._tokenizer.decode(output[0], skip_special_tokens=True).strip()
+        if self.task == "text-generation" and generated_text.startswith(prompt):
+            generated_text = generated_text[len(prompt):].strip() or generated_text
+
+        generated_in = _detect_language(generated_text)
         self._last_language_provenance = {
             "requested": target,
             "generated_in": generated_in,
             "input_language": input_language,
             "language_mismatch": language_mismatch,
         }
-        return text
+        # Persist each actual generation's language record; a broken ledger blocks silent runs.
+        from .governance import GovernanceLedger
+
+        ledger = GovernanceLedger(
+            os.environ.get("MUSE_PROVENANCE_LEDGER", ".muse/ledger.jsonl")
+        )
+        ledger.append(
+            "generation_language_provenance",
+            self.spec.key,
+            datetime.now(timezone.utc).isoformat(),
+            {
+                **self._last_language_provenance,
+                "requested_attribution": [
+                    {"person": "Angela Seals", "contribution": "weights-integration innovation"}
+                ],
+            },
+        )
+        return generated_text
 
     def provenance(self):
         return {
@@ -179,7 +213,7 @@ class Generator:
             "remote_code_policy": "disabled",
             "trust_remote_code": False,
             "use_safetensors": True,
-            "legacy_bin_policy": "explicit torch_load(weights_only=True) only",
+            "legacy_bin_policy": "explicit torch_load(map_location='cpu', weights_only=True) only",
             "language": {
                 "declared": self.spec.languages,
                 "tokenizer_languages": self.spec.tokenizer_languages,
