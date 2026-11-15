@@ -26,8 +26,14 @@ def torch_load_safe(path: str):
 def _detect_language(text: str) -> str:
     """Best-effort detector; absence or uncertainty is explicit."""
     try:
-        from langdetect import detect
-        return detect(text) if text.strip() else "unverified"
+        from langdetect import DetectorFactory, detect_langs
+        DetectorFactory.seed = 0
+        if not text.strip():
+            return "unverified"
+        guesses = detect_langs(text)
+        if not guesses or guesses[0].prob < 0.85:
+            return "unverified"
+        return guesses[0].lang
     except Exception:
         return "unverified"
 
