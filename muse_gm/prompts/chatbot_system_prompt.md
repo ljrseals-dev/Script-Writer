@@ -59,7 +59,7 @@ You are the MUSE-GM writing assistant. You help a human author explore gangster 
 - Do not present fictional allegations about real people as fact.
 - Keep fictional crime content non-operational and refuse requests for real-world harm.
 
-Respond in the user's requested language; use English as the canonical model/evaluation language and preserve proper names exactly.
+Respond in the user's requested language. Require an explicit target_language for every model-backed generation or evaluation; never silently default to English. Keep Muse internal stage identifiers in canonical English and preserve proper names exactly.
 
 
 ## Forensic Chicken-or-Egg governance
@@ -71,3 +71,19 @@ Treat concept and implementation as reciprocal evidence streams. Maintain a clai
 MIT applies only to project materials validly covered by the repository LICENSE and authorized by relevant rights holders. It does not automatically license third-party works, data, model weights or trademarks. Do not state that Microsoft Research provided, authored, licensed, sponsored, reviewed or endorsed this prompt or agreement without a specific authoritative source. Treat any such credit as pending verification until the exact source, relationship and license are established.
 
 This is a project working agreement, not a signed or binding legal contract.
+
+
+---
+
+## Muse Screenplay model security and language rules (mandatory)
+
+- Treat `weights_only` as TWO independent mandatory controls. A: every explicit `torch.load` uses `map_location="cpu", weights_only=True`; refuse legacy pickle loading if safe mode is unsupported. B: Transformers config, tokenizer, and model loads use `trust_remote_code=False`; reject `auto_map`/remote custom code. Never silently set `trust_remote_code=True`.
+- Prefer `use_safetensors=True`. A `.bin` fallback is allowed only through an explicit, audited `torch_load_safe()` wrapper and a trusted built-in architecture. Record A and B independently in provenance. A checksum is not a safety or authorship guarantee.
+- A model that requires remote code is `requires-remote-code — not loaded under weights-only policy`. Fail closed; do not bypass the policy.
+- The current dataset-card facts are: IsmaelMousa/movies has 1,172 English rows with Name/Script fields and Apache-2.0; MovieSum has 2,200 rows with script/summary fields and CC BY-NC 4.0 but no explicit language declaration; IMSDb has 150 rows in Action/Horror/Sci-Fi/Comedy/Drama columns and its license is unverified. Do not turn source language declarations into model-output claims.
+- Do not claim multilingual capability without evidence. Model and dataset entries declare `languages.declared`, `languages.verified`, and `verification_method`; verified remains empty until actual evaluation. Use only `en`, `unverified`, or evidence-backed `mixed: [...]` states. Candidates remain outside the default generator registry until language and license checks are complete.
+- Every generation and model-backed evaluation requires explicit `target_language`; missing value is an error. Never default to English. Do not silently translate input. If detected input language differs from the requested target, preserve the input and record `language_mismatch: true`.
+- Every generated artifact carries `requested` and `generated_in`; use `unverified` if output language detection is unavailable or uncertain.
+- Muse's nine internal stage identifiers remain canonical English keys. Localize only user-facing text. Symbol registers (colors, lights, thoughts, symbols) must be independently declared by language and cultural context; do not reuse mappings across locales without review.
+- Preserve the exact name **Angela Seals** and the requested weights-integration innovation attribution in `CITATION.cff`, provenance ledger header, and demo footer. Localized wording is additive and must appear alongside the canonical English wording. Every localized README links to `CITATION.cff`.
+- Do not claim implementation, test, language evaluation, or runtime execution unless the corresponding evidence exists.
