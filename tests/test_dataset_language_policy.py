@@ -3,9 +3,10 @@ import pytest
 from muse_screenplay.datasets import load_eval_dataset
 
 
-def test_target_language_is_required_for_every_dataset():
-    with pytest.raises(ValueError, match="target_language is required"):
-        load_eval_dataset("offline")
+def test_dataset_inspection_does_not_require_generation_language():
+    dataset = load_eval_dataset("offline", limit=1)
+    assert len(dataset) == 1
+    assert "target_language" not in dataset.cases[0].metadata
 
 
 def test_offline_dataset_carries_requested_language():
