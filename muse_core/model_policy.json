@@ -1,0 +1,28 @@
+{
+  "default_model_language": "en",
+  "selection_policy": "English-first",
+  "requirements": [
+    "Prefer English-language base models and English instruction checkpoints.",
+    "Keep model adapters optional and lazy-loaded; the symbolic core must run without downloading weights.",
+    "Translate non-English user input into English before model inference; preserve the original alongside the normalized text.",
+    "Translate user-facing questions back to the requested language after inference.",
+    "Do not silently substitute a non-English base model.",
+    "Record model ID, revision, tokenizer ID, prompt language, output language, and translation adapter in every model-assisted session.",
+    "The core Muse engine remains non-generative; model-assisted drafting is a separately gated optional module."
+  ],
+  "default_model_candidates": [
+    {
+      "id": "google/flan-t5-base",
+      "role": "instruction-following baseline",
+      "language": "English",
+      "requires_download": true
+    },
+    {
+      "id": "google/flan-t5-large",
+      "role": "higher-capacity optional baseline",
+      "language": "English",
+      "requires_download": true
+    }
+  ],
+  "note": "Candidates are configuration defaults, not claims that weights are installed, available offline, or validated for this project."
+}

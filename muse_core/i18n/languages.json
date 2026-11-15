@@ -1,0 +1,20 @@
+{
+  "default": "en",
+  "model_language": "en",
+  "supported": [
+    "en",
+    "zh-Hans",
+    "es",
+    "ja",
+    "fr"
+  ],
+  "policy": {
+    "canonical_prompt_language": "en",
+    "canonical_model_language": "en",
+    "translate_user_input_to_english_before_model": "true",
+    "translate_model_response_to_requested_language": "true",
+    "preserve_original_user_text": true,
+    "fallback": "en",
+    "never_claim_translation_quality_without_validation": true
+  }
+}
