@@ -21,7 +21,7 @@ muse-screenplay models
 muse-screenplay datasets
 muse-screenplay validate --file examples/sample_scene.txt
 muse-screenplay evaluate --dataset offline --target-language en --limit 2
-muse-screenplay optimize --dataset offline --limit 2 --rounds 1
+muse-screenplay optimize --dataset offline --target-language en --limit 2 --rounds 1
 muse-screenplay generate --model script-bart --target-language en --prompt "INT. COFFEE SHOP - DAY"
 ```
 
