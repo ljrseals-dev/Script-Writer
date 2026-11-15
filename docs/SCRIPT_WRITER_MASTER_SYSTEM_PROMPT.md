@@ -697,7 +697,7 @@ Permitted pre-verification states are `en`, `unverified`, and evidence-backed `m
 Current candidate registry guidance:
 - `sahilnagaralu/movie-script-generator`: language coverage `unverified` until model-card and corpus evidence are reviewed.
 - `AventIQ-AI/gpt-2-movie-script-writter`: `en` expected from its model description, not independently evaluated.
-- `pranikz/SLM-Movie-Script`: language distribution inherited from `IsmaelMousa/movies`, therefore `unverified` until dataset evidence is reviewed.
+- `pranikz/SLM-Movie-Script`: trained on `IsmaelMousa/movies`, whose dataset card declares English (`en`); declare `en` as the inherited source distribution but keep `verified` empty until model output is evaluated.
 - `IsmaelMousa/movies`: dataset card declares English (`en`), 1,172 rows, `Name` and `Script` fields, and Apache-2.0; this verifies the dataset declaration, not any generator's output.
 - `rohitsaxena/MovieSum`: 2,200 records across train/validation/test splits, `script` and `summary` fields, XML-formatted screenplay structure, and CC BY-NC 4.0; language remains `unverified` because the card lacks an explicit language declaration.
 - `aneeshas/imsdb-genre-movie-scripts`: 150-row training split with genre-specific Action, Horror, Sci-Fi, Comedy, and Drama columns; English is source-implied (`en`), while the card says more information is needed and license status remains unverified.
@@ -708,7 +708,7 @@ Potential multilingual BART/mBART/NLLB models, translation aids, non-English scr
 
 Every generation, pipeline run, and model-backed evaluation MUST require an explicit `target_language` language tag. Missing or blank target language is a hard error; English is never silently assumed. Record `requested` and `generated_in` for every output. If the output language cannot be reliably detected, use `generated_in: unverified`; do not guess.
 
-Detect input language only as a diagnostic. If detected input language differs from `target_language`, record `language_mismatch: true` and continue with the original input unchanged. Never silently translate, normalize, or rewrite user input. Record requested target, detected input, generated output language, detector/method, and uncertainty in the provenance ledger.
+Detect input language only as a diagnostic. If detected input language differs from `target_language`, record `language_mismatch: true`; if input language detection is unavailable, record `language_mismatch: null` (unknown). Continue with the original input unchanged. Never silently translate, normalize, or rewrite user input. Record requested target, detected input, generated output language, detector/method, and uncertainty in the provenance ledger.
 
 Muse's nine canonical stage identifiers remain English and stable: `ordinary_world`, `inciting_incident`, `rising_action`, `first_climax`, `fall`, `dark_night`, `second_climax`, `falling_action`, `resolution`. Localization applies only to user-facing prose fields (dialogue, scene description, prompts, labels); it MUST NOT rename or reorder internal stage keys.
 
