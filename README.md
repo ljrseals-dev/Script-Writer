@@ -23,7 +23,7 @@ These systems have different epistemic roles. Muse supplies a narrative organiza
 
 ## 1. Scope and intended use
 
-Script-Writer is intended for writers, directors, actors, researchers, and development teams who need a transparent way to explore story premises and examine the assumptions behind them. It is especially suited to historical and socially situated crime narratives, diaspora settings, family systems, political economies, and stories about power, obligation, complicity, and succession.
+Script-Writer is intended for writers, directors, actors, researchers, and development teams who need a transparent way to explore story premises and examine the assumptions behind them. It is especially suited to historically and socially situated crime narratives, diaspora settings, family systems, political economies, and stories about power, obligation, complicity, and succession.
 
 The software supports:
 
@@ -43,8 +43,8 @@ It does **not** establish that a highly ranked premise is historically true, eth
 | **Muse by Rihanna** | Organizes development through a nine-stage, double-climax narrative structure and symbolic registers for colors, lights, thoughts, and symbols. | It does not prove that a particular plot is historically accurate or artistically effective. |
 | **MUSE-GM** | Enumerates the configured factorial premise space, applies rubric tables, ranks configurations, and exports reproducibility artifacts. | It does not retrieve primary sources or measure the real-world probability of a premise. |
 | **Brute Genius** | Names the project's exhaustive-search approach: evaluate the declared configuration space rather than rely on an unrecorded sample. | It is not, in the current implementation, a general-purpose historical web-search or archival-retrieval service. |
-| **Writing-room application** | Guides a user through premise review, approval, causal development, character work, tonal planning, and artifact capture. | A language model response is not a substitute for the engine's recorded state or the user's approval. |
-| **Optional model adapters** | Development work may connect external language-model weights for prose assistance. | Third-party weights do not define the narrative rules, certify facts, or become deterministic merely because a seed is supplied. |
+| **Writing-room application** | Guides a user through premise review, approval, causal development, character work, tonal planning, and artifact capture. | A language-model response is not a substitute for the engine's recorded state or the user's approval. |
+| **Optional screenplay/model adapters** | Where included in a checkout, the screenplay adapter compiles Muse's narrative structure into a stable prompt and can use external Hugging Face weights to draft prose. | Third-party weights do not define the narrative rules, certify facts, or become deterministic merely because a seed is supplied. |
 
 ### Muse's nine-stage sequence
 
@@ -120,6 +120,8 @@ python -m muse_gm --help
 python -m muse_gm run --help
 ```
 
+Where `muse_screenplay` is present, its optional model extra and CLI are documented in [muse_screenplay/README.md](muse_screenplay/README.md). Model weights are not bundled; downloading from Hugging Face requires an explicit user action. Check model cards and licenses before use.
+
 ## 5. Outputs and reproducibility
 
 A run can emit ranked results, a machine-readable manifest, numeric-coded and labeled CSV files, and SPSS syntax. The manifest records the command, configuration hashes, weight profile, selection, software versions, and evidence-status metadata.
@@ -194,6 +196,7 @@ Do not describe the project as guaranteeing historical accuracy, eliminating cre
 ```text
 muse_core/          Muse narrative core and symbolic bridge
 muse_gm/            factorial engine, rubric data, prompts, and local application
+muse_screenplay/    optional screenplay prompt compiler and model adapter, where present
 tests/              engine, application, and baseline tests
 docs/               architecture, mathematics, research, governance, and roadmap
 results/            checked-in baseline and prototype outputs
