@@ -139,6 +139,7 @@ class Generator:
             {
                 "architecture_status": "requires-remote-code",
                 "load_status": "not-loaded",
+                "pytorch_weights_only": True,
                 "remote_code_policy": "disabled",
                 "trust_remote_code": False,
                 "rejection_source": source,
@@ -208,7 +209,7 @@ class Generator:
             )
             weight_format = "safetensors"
             self._weight_artifacts = self._observed_safetensors_hashes()
-        except (OSError, ValueError) as safe_error:
+        except (OSError, ValueError, ImportError) as safe_error:
             # No implicit Transformers pickle fallback: .bin is an explicit safe path.
             try:
                 from huggingface_hub import hf_hub_download
@@ -284,6 +285,10 @@ class Generator:
             datetime.now(timezone.utc).isoformat(),
             {
                 **self._last_language_provenance,
+                "pytorch_weights_only": True,
+                "remote_code_policy": "disabled",
+                "trust_remote_code": False,
+                "weight_format": getattr(self, "_weight_format", "not-loaded"),
                 "weight_artifacts": getattr(self, "_weight_artifacts", []),
                 "requested_attribution": [
                     {"person": "Angela Seals", "contribution": "weights-integration innovation"}
@@ -312,5 +317,6 @@ class Generator:
                 "last_run": getattr(self, "_last_language_provenance", None),
             },
             "weight_format": getattr(self, "_weight_format", "not-loaded"),
+            "architecture_status": "builtin-only" if self._model is not None else "not-loaded",
             "weight_artifacts": getattr(self, "_weight_artifacts", []),
         }
