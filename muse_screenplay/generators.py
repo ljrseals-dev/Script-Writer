@@ -85,7 +85,7 @@ class Generator:
                 AutoConfig, AutoModelForCausalLM, AutoModelForSeq2SeqLM, AutoTokenizer
             )
         except ImportError as exc:
-            raise RuntimeError('PyTorch and transformers are required; run pip install -e ".[models]"') from exc
+            raise RuntimeError('transformers is not installed or PyTorch is unavailable; run pip install -e ".[models]"') from exc
 
         settings.apply_environment()
         common = {
