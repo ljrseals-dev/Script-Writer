@@ -43,8 +43,8 @@ MODELS = {
     "mini-gpt-script": ModelSpec(
         "mini-gpt-script", "pranikz/SLM-Movie-Script",
         "text-generation", "minigpt",
-        notes="Small Transformer trained on IsmaelMousa/movies; inherited language distribution unverified.",
-        languages={"declared": ["unverified"], "verified": [], "verification_method": None},
+        notes="Small Transformer trained on IsmaelMousa/movies; source dataset declares English, model output not independently evaluated.",
+        languages={"declared": ["en"], "verified": [], "verification_method": None},
     ),
 }
 
