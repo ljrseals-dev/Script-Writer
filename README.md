@@ -1,186 +1,219 @@
-<div align="center">
+# Script-Writer
+## A reproducible narrative-design and screenplay-development research environment
 
-# Script Writer powered by Muse by Rhianna
+**Script-Writer** is a research-oriented workspace for constructing, comparing, and developing story premises. It brings together an explicit narrative framework, a finite factorial decision surface, and a human-governed writing workflow. Its purpose is not to replace authorship or historical scholarship. It is to make creative assumptions inspectable, premise exploration reproducible, and the transition from research to dramatic structure more disciplined.
 
-![HBO Styled Gangster Scene](images/gangster1.jpg)
+The project combines two complementary foundations:
 
+1. **Muse by Rihanna** — a nine-stage narrative architecture with symbolic registers.
+2. **MUSE-GM / Brute Genius** — an exhaustive, rubric-scored enumeration of a configured story-origin space.
 
-### A deterministic story-development and screenplay-writing workspace
+These systems have different epistemic roles. Muse supplies a narrative organization. MUSE-GM evaluates combinations under declared editorial criteria. Neither is a historical database, an empirical audience model, or an authority on the truth of a historical claim.
 
-**4,445,280 origins. One instrument. No dice.**
+> **Research principle:** make the assumptions explicit, preserve the evidence trail, and keep human judgment accountable for the final work.
 
-[![tests](https://github.com/ljrseals-dev/bang/actions/workflows/ci.yml/badge.svg)](https://github.com/ljrseals-dev/bang/actions/workflows/ci.yml)
-![python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue)
-![license](https://img.shields.io/badge/license-MIT-green)
-![evidence](https://img.shields.io/badge/evidence-rubric%20judgments%2C%20not%20measurements-orange)
+[![CI](https://github.com/ljrseals-dev/Script-Writer/actions/workflows/ci.yml/badge.svg)](https://github.com/ljrseals-dev/Script-Writer/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Evidence model](https://img.shields.io/badge/evidence-encoded%20editorial%20judgments-orange)
 
-*Project attribution: Lewis James Seals Jr., Liliabet Diana Windsor, Laila Star Seals, and Lawrence James Seals.*
-
-</div>
+**Project attribution:** Lewis James Seals Jr., Liliabet Diana Windsor, Laila Star Seals, and Lawrence James Seals. See [CITATION.cff](CITATION.cff) and the project provenance documents for attribution context.
 
 ---
 
-Fourteen diaspora nodes. Eight eras. Nine economies. Seven pressures. Five media frames. Six family systems. Seven archetypes. Three effects.
-Multiply them. That is the whole space of origins, and it is finite.
+## 1. Scope and intended use
 
-Script Writer uses the MUSE-GM decision-surface engine; it does not sample the story space. It **walks** it. Every combination is scored, ranked, hashed and exported to SPSS. Two weight profiles ship with it, sensitivity analysis is built in, and every run leaves a manifest you can reproduce to the sixth decimal.
+Script-Writer is intended for writers, directors, actors, researchers, and development teams who need a transparent way to explore story premises and examine the assumptions behind them. It is especially suited to historical and socially situated crime narratives, diaspora settings, family systems, political economies, and stories about power, obligation, complicity, and succession.
 
-![Historical Street Scene](images/gangster2.jpg)
+The software supports:
 
-> **Stratagem №1: don't sample the story. Exhaust it.**
-> Every screenwriter guesses. This one enumerates. Zero of the 4,445,280 possible origins are left to chance.
+- exhaustive enumeration of a declared finite premise space;
+- ranking against an explicit, versioned editorial rubric;
+- sensitivity analysis under alternative weighting assumptions;
+- reproducible export of results and run metadata;
+- a Muse-based narrative-development framework;
+- a local writing-room workflow with human approval gates.
 
-**Read the paper:** [Using Brute Force: Deterministic Genesis of the Origins of Gangsters](docs/paper/using-brute-force-deterministic-genesis.md) · [Addendum: baseline results](docs/paper/ADDENDUM-baseline-results.md) · [The mathematics](docs/MATH.md)
+It does **not** establish that a highly ranked premise is historically true, ethically sufficient, dramatically successful, or commercially viable. Those judgments require independent research, editorial scrutiny, and audience-facing evaluation.
 
-## Contents
-[What it is](#what-it-is) · [Credits & agreement](#credits--chicken-or-egg-agreement) · [Baseline results](#baseline-results) · [Quick start](#quick-start) · [Usage](#usage) · [The chat app](#the-chat-app) · [How it works](#how-it-works) · [Evidence and limits](#evidence-and-limits) · [Integrity and reproducibility](#integrity-and-reproducibility) · [Repository layout](#repository-layout) · [Roadmap](#roadmap) · [Cite](#cite) · [Brute Genius addendum](#brute-genius-addendum) · [License](#license)
+## 2. System architecture
 
-## What it is
-- **An engine.** A full-factorial enumeration of eight nominal variables (a story world declared like an SPSS Variable View), scored by six components built from 24 rubric tables.
-- **An instrument, not an oracle.** The rubric is human judgment, stated plainly, versioned and hashed. Every manifest says so in machine-readable text: `rubric_encoded_judgments_not_measured_data`.
-- **A workflow.** A local chat app that uses the engine to walk a writer through ranking, human approval, causal spine, audit, characters, tonal sheet and script, with the gates enforced in code.
-
-## Baseline results
-Rank-1 premises under the `master` profile (rubric SHA-256 `04c2bcf7dff0051f…`). Full lists: [`results/baseline/`](results/baseline/).
-
-| Target | Rank-1 premise (node · era · economy · pressure · media · family · archetype) | Score |
+| Component | Function | What it does not establish |
 |---|---|---|
-| Humanized | Harlem · 1940s-50s numbers/labor · policy/numbers · police surveillance · Black press counter-narrative · matriarch-led · ethical rebel loner | 0.9157 |
-| Dreaded | Kingston JA · 1980s Yardie/garrison · drug corridor · political garrison patronage · state intelligence file · estranged-return · enforcer | 0.9160 |
-| Pivot | Harlem · 1940s-50s numbers/labor · policy/numbers · police surveillance · state intelligence file · matriarch-led · heir | 0.8981 |
+| **Muse by Rihanna** | Organizes development through a nine-stage, double-climax narrative structure and symbolic registers for colors, lights, thoughts, and symbols. | It does not prove that a particular plot is historically accurate or artistically effective. |
+| **MUSE-GM** | Enumerates the configured factorial premise space, applies rubric tables, ranks configurations, and exports reproducibility artifacts. | It does not retrieve primary sources or measure the real-world probability of a premise. |
+| **Brute Genius** | Names the project's exhaustive-search approach: evaluate the declared configuration space rather than rely on an unrecorded sample. | It is not, in the current implementation, a general-purpose historical web-search or archival-retrieval service. |
+| **Writing-room application** | Guides a user through premise review, approval, causal development, character work, tonal planning, and artifact capture. | A language model response is not a substitute for the engine's recorded state or the user's approval. |
+| **Optional model adapters** | Development work may connect external language-model weights for prose assistance. | Third-party weights do not define the narrative rules, certify facts, or become deterministic merely because a seed is supplied. |
 
-**Read these with care.** Under 0.05 weight shifts the exact rank-1 premise changes in 1 of 12 variants (humanized), 4 of 12 (dreaded) and 6 of 12 (pivot). The stable finding is the neighborhood (Harlem 1940s policy; Kingston 1980s drug corridor), not a single cell. See the [addendum](docs/paper/ADDENDUM-baseline-results.md).
+### Muse's nine-stage sequence
 
-## Muse by Rhianna foundation + Gangster Manga theme
+1. Ordinary World
+2. Inciting Incident
+3. Rising Action
+4. First Climax — False Victory
+5. Fall
+6. Dark Night
+7. Second Climax — True Choice
+8. Falling Action
+9. Resolution
 
-This repository now includes the extracted Muse narrative core from
-[stunning-happiness](https://github.com/ljrseals-dev/stunning-happiness), preserved
-under `muse_core/` and presented as the foundation of Script Writer. It tracks the nine-stage double-climax pyramid and the four
-symbolic registers (colors, lights, thoughts, symbols). The existing MUSE-GM
-factorial decision-surface engine remains separate and unchanged.
+The Gangster Manga lens is a thematic sidecar. It may frame questions about territory, hierarchy, loyalty, debt, complicity, succession, and the cost of power. It must not silently redefine Muse's base symbolic meanings or predetermine a character's moral outcome.
 
-The `gangster_manga` theme is a sidecar: it interprets Muse symbols through
-territory, hierarchy, loyalty, debt, complicity, succession, and the cost of power.
-It does not alter Muse's base symbol meanings or force a story outcome.
+The existing core also supports writer-facing prompts in multiple languages. English remains the canonical language for internal model prompts and technical identifiers; localization does not change the underlying narrative stages.
 
-English is the canonical model/prompt language. The theme includes localized
-writer-facing prompts for English, Simplified Chinese, Spanish, Japanese, and
-French; unsupported locales fall back to English. Model weights are not bundled
-or downloaded implicitly. See [the integration contract](docs/MUSE_RIHANNA_GANGSTER_MANGA.md).
+## 3. MUSE-GM: formal search space
 
-Quick theme consultation:
+The current configuration defines a full-factorial space of **4,445,280 possible origins**. Its dimensions represent declared categories such as diaspora node, era, economy, pressure, media frame, family system, and archetype, together with the project's other configured factors.
+
+The engine evaluates the complete configured space. Its implementation broadcasts rubric tables over a multidimensional array, computes component scores, applies a selected weight profile, and ranks configurations with a deterministic tie-break. It supports restricted exhaustive runs through selection filters and distinct-result views for reducing near-duplicate premises.
+
+The rubric contains **encoded editorial judgments**. The mathematics can be exact while the inputs remain interpretive. A score is therefore a statement about how a configuration performs under the currently declared rubric—not an objective measurement of historical plausibility.
+
+The project ships with alternative weighting profiles and sensitivity analysis so that readers can inspect how rankings respond when editorial priorities change. Exact rank-one results should not be treated as stable if small weight changes reorder them.
+
+For the mathematical specification and worked derivation, see [docs/MATH.md](docs/MATH.md). The research paper and baseline addendum are in [docs/paper/](docs/paper/).
+
+## 4. Installation and quick start
+
+The core engine targets Python 3.10–3.12. From a clone:
 
 ```bash
-python -m muse_core --stage ordinary_world --language en --symbol colors:black --symbol symbols:crown
-python -m unittest tests.test_muse_bridge -v
-```
+git clone https://github.com/ljrseals-dev/Script-Writer.git
+cd Script-Writer
 
-## Quick start
-```bash
-git clone https://github.com/ljrseals-dev/bang && cd bang
-pip install -e .            # engine only (needs numpy)
-pip install -e ".[app]"     # plus the chat app (needs the anthropic package)
+python3 -m venv .venv
+. .venv/bin/activate
+
+python -m pip install --upgrade pip
+python -m pip install numpy
+
 python -m unittest discover -v tests
+python -m muse_gm check
 ```
-Without installing, run `python -m muse_gm ...` from the repository root.
 
-## Usage
+If the checkout includes the packaged application extras, install the project using its declared extras. Do not assume optional language-model dependencies or model weights are present in a core-only installation.
+
+### Core commands
+
 ```bash
-muse-gm variables --values                                  # the Variable View with value labels
-muse-gm check                                               # validate config, size, hashes
-muse-gm run --top 5                                         # all 4,445,280 cases, top 5 per target
-muse-gm run --effect pivot --distinct node,era,economy      # best premise per core, not near-duplicates
-muse-gm run --select node=Harlem --select era=3 --out runs/001
-muse-gm sensitivity                                         # master vs equal, plus 12 weight shifts
+python -m muse_gm variables --values
+python -m muse_gm check
+python -m muse_gm run --top 5
+python -m muse_gm run --effect pivot --distinct node,era,economy
+python -m muse_gm sensitivity
 ```
-`--out` writes `results.jsonl`, `manifest.json`, a numeric-coded CSV, a labeled CSV and an SPSS `.sps` file. `--select` restricts the space (exhaustive inside it). Edit [`muse_gm/data/variables.json`](muse_gm/data/variables.json) and [`rubric.json`](muse_gm/data/rubric.json) to change the world; the code does not move.
 
-## The chat app
+A selected run can be constrained without changing the underlying variable definitions:
+
 ```bash
-export ANTHROPIC_API_KEY=...        # your key, billed to you, never written to disk
-muse-gm-app                         # http://127.0.0.1:8484
-```
-- Approval of a configuration is a **button you click**. The model has no approve tool.
-- `save_artifact` refuses a script until the spine, audit, characters and tonal sheet are saved.
-- Rankings come only from the engine. The server binds to 127.0.0.1 and never echoes your key.
-- **Status:** the tool loop, gates and HTTP layer are tested against a fake client. The live Claude API path has not been run.
-
-## How it works
-```
- variables.json ─┐                       ┌─> ranked lists (per effect target)
-                 ├─> 4,445,280 cases ──> 6 components ──> weighted score ──┤
- rubric.json  ───┘   (full factorial)    (24 tables)       (profile)        └─> manifest + hashes + CSV/SPSS
-```
-Tables are broadcast onto one 8-D array, so there is no row-per-case table in memory. Linear and geometric combinations are defined in the rubric; weights must sum to 1; non-finite or out-of-range values stop the run. The full derivation, with a worked example, is in [`docs/MATH.md`](docs/MATH.md).
-
-## Evidence and limits
-- **Judgments, not data.** Every table entry is an editorial judgment. The mathematics is exact; the inputs are not measurements.
-- **Fragile at the margin.** Exact winners move under small weight shifts (above). Use `--distinct` and `sensitivity`.
-- **Documented-anchor bias.** Less-saturated nodes (Salvador, Accra, Marseille, Lagos) score lower mostly on documented-anchor plausibility. Revisit them with sourced research.
-- **Untested paths.** The SPSS export has not been run in SPSS; the chat app has not been run against the live API; CI covers Linux only.
-- **Not an audience model.** It does not know whether a script will be good.
-
-## Integrity and reproducibility
-- Every run records the SHA-256 of both config files, the command, profile, weights, selection, and versions.
-- `tests/test_baseline.py` re-runs the engine and compares the top five per target with `results/baseline/` on every CI run.
-- A release zip ships with `SHA256SUMS`; `sha256sum -c SHA256SUMS` detects truncated or altered files.
-
-## Repository layout
-```
-muse_gm/            engine.py (scoring + CLI), app.py (chat server), data/ (variables + rubric), prompts/, static/
-tests/              27 tests: engine, app gates, baseline reproducibility
-docs/paper/         the paper and the baseline-results addendum
-docs/               MATH.md, ARCHITECTURE.md, ROADMAP.md, source/ (original Master Prompt export)
-results/            baseline/ (current run), prototype/ (first-draft output)
-logs/               run records, incl. the Vintage harness dry-run audit (see logs/README.md)
-prototype/          first-draft scoring script, kept for provenance
-.github/workflows/  CI on Python 3.10-3.12
+python -m muse_gm run \
+  --select node=Harlem \
+  --select era=3 \
+  --out runs/harlem-era3
 ```
 
-## Roadmap
-Penalty terms, the guilt/forgiveness/containment dimensions, staged search for spaces beyond 10⁹, and machine-checkable refusal conditions. Open decisions are listed in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Consult the CLI help for the exact options available in the checked-out revision:
 
-## Cite
-See [`CITATION.cff`](CITATION.cff). Lewis James Seals Jr. and Laila Star Seals, *MUSE-GM: Deterministic Genesis of the Origins of Gangsters*, 2026.
+```bash
+python -m muse_gm --help
+python -m muse_gm run --help
+```
 
-## License
-MIT. See [`LICENSE`](LICENSE).
+## 5. Outputs and reproducibility
+
+A run can emit ranked results, a machine-readable manifest, numeric-coded and labeled CSV files, and SPSS syntax. The manifest records the command, configuration hashes, weight profile, selection, software versions, and evidence-status metadata.
+
+For reproducible research practice:
+
+1. Preserve the exact input configuration and rubric used for a run.
+2. Retain the manifest and generated outputs together.
+3. Record any manual changes to the premise after ranking.
+4. Report the weight profile and sensitivity results when presenting a selected premise.
+5. Distinguish software reproducibility from the validity of the editorial assumptions.
+
+The baseline tests compare current engine output with checked-in reference results. Such tests establish consistency with the recorded baseline; they do not independently validate the rubric's historical or artistic claims.
+
+## 6. Historical research and evidence discipline
+
+The project's intended use includes historically grounded storytelling. The current MUSE-GM factorial search is **not** an archival search engine and does not independently retrieve or authenticate historical sources. A ranked premise, model-generated passage, or thematic prompt must never be cited as evidence for a historical event.
+
+A responsible research workflow should maintain separate records for:
+
+- **Verified fact:** supported by an identifiable source and precise reference.
+- **Disputed claim:** attributed to its source and presented with the disagreement intact.
+- **Interpretation:** an argument drawn from evidence, not a fact in itself.
+- **Fiction:** invented dialogue, composite characters, altered chronology, or constructed events.
+- **Research gap:** a factual assertion that still requires verification.
+
+For primary-source work, record the archive or publisher, collection or document identifier, creator, date, page or folio, stable URL or catalogue reference, access date, and any relevant rights or access restrictions. Seek corroboration for consequential claims. Where sources conflict, preserve the conflict rather than flattening it into a confident narrative.
+
+Until a source-cited retrieval and provenance layer is implemented and validated, historical verification remains the responsibility of the research team.
+
+## 7. Writing-room governance
+
+The local writing-room application is designed around a simple governance distinction: a model may assist with language, but the application and the human operator retain authority over state transitions and approval. Approval is an explicit user action; it is not inferred from a model's conversational wording.
+
+The project architecture documents the engine, application, session state, and approval gates in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The live external language-model path and production deployment must be validated separately from tests that use a fake client or local fixtures.
+
+## 8. Related projects in the Seals research and writing ecosystem
+
+The following repositories are related projects with distinct audiences and scopes. They are linked here for discovery; they are **not** represented as dependencies or integrated subsystems of Script-Writer.
+
+### [Muse Sermon — church](https://github.com/ljrseals-dev/church)
+
+A sermon-preparation and study companion for preachers, with the King James Version as its default translation and a Mother Tammy conversational persona. Its engine records notes, tracks preparation stages, and prompts exegetical and pastoral reflection. Its stated design boundary is that it does not write the sermon. The repository describes a standard-library Python implementation with JSON session records and optional LLM-rendered replies.
+
+**Positioning:** a preparation and reflection aid for sermon development—not an automated preacher and not a substitute for biblical scholarship, pastoral discernment, or denominational guidance.
+
+### [Muse Sermon v2 — black-church](https://github.com/ljrseals-dev/black-church)
+
+A focused study companion for the African American / Black church pulpit. Its documented prompts attend to the text's exigency, the hearers' concrete conditions, the cloud of witnesses, hope and denial, refrain, humor, the close, and stewardship. It leaves denominational distinctives for the user to specify and calls attention to checking archaic or shifted KJV wording against Hebrew and Greek.
+
+**Positioning:** a tradition-aware sermon-preparation companion—not a replacement for the preacher's exegesis, community knowledge, or pastoral responsibility.
+
+Both repositories have their own source, instructions, usage, and licensing context. Review each repository directly before adoption or deployment.
+
+## 9. Limitations and validation status
+
+The following boundaries are material to interpreting results:
+
+- Rubric values are authored judgments, not measured observations.
+- Sensitivity analysis can reveal ranking instability; it cannot remove subjectivity from the rubric.
+- Less-documented regions or communities may be disadvantaged by the current anchor set. This is a research-design issue, not evidence of lower historical importance.
+- SPSS syntax should be tested in the target SPSS environment before being treated as validated output.
+- The writing-room live API path requires separate end-to-end testing; fake-client tests do not establish live-provider behavior.
+- External model generation depends on model availability, tokenizer and runtime versions, hardware, and each model publisher's license.
+- A fixed seed and greedy decoding improve repeatability but do not guarantee bit-identical results across hardware and software environments.
+- Generated scripts require human editorial, historical, cultural, legal, and rights review.
+
+Do not describe the project as guaranteeing historical accuracy, eliminating creative bias, predicting audience response, or producing production-ready scripts without further evidence.
+
+## 10. Repository map
+
+```text
+muse_core/          Muse narrative core and symbolic bridge
+muse_gm/            factorial engine, rubric data, prompts, and local application
+tests/              engine, application, and baseline tests
+docs/               architecture, mathematics, research, governance, and roadmap
+results/            checked-in baseline and prototype outputs
+logs/               documented run records and audit material
+prototype/          retained early implementation material
+.github/workflows/  continuous-integration configuration
+```
+
+Consult the actual checkout for optional or in-development modules; a directory or feature described in a development branch is not necessarily present in every release.
+
+## 11. Research citation and provenance
+
+The repository includes [CITATION.cff](CITATION.cff). The research paper, baseline addendum, mathematics, and provenance documents provide additional context. Cite the version or commit actually used, rather than citing a moving branch as though it were a fixed research artifact.
+
+Attribution and project-history statements should be read alongside the repository's provenance and credits documents. Third-party model weights, datasets, images, and other external materials remain subject to their respective authors' licenses and terms. Project attribution does not transfer ownership of those materials.
+
+## 12. License
+
+The project is distributed under the MIT License; see [LICENSE](LICENSE). The license for this repository does not override the terms attached to external models, datasets, archives, images, or other third-party resources.
 
 ---
-*Brute force, applied to the entire space at once, is craft made legible.*
 
-
-## Realm of Quant audio codec (optional)
-
-The local chatbot now has a `/codec` page with user-initiated links to the upstream
-FP16 ONNX encoder and decoder researched in
-[Realm of Quant](https://github.com/ljrseals-dev/realm-quant). These are 24 kHz
-audio-codec components, not text tokenizers or language-model encoders. The current
-integration exposes downloads and research context; it does **not** yet execute
-ONNX inference or process audio. See
-[the integration and evidence notes](docs/REALM_QUANT_CHATBOT_INTEGRATION.md).
-
-**Research credit:** Realm of Quant preprint author: Lewis James Seals Jr.
-Requested research acknowledgement: Adonna Seals. Her specific role is
-not independently detailed in the preprint's current author-contributions section;
-the acknowledgement is included at the project maintainer's request and is not a
-claim of preprint co-authorship.
-
-
-## Credits & Chicken-or-Egg Agreement
-
-Project credits and the provenance agreement are recorded in
-[docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md](docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md).
-The agreement treats concept and implementation as potentially reciprocal, relies on
-preserved evidence for attribution, and does not assume legal consent or assign
-unsupported individual roles.
-
-
-## Forensic credits and Chicken-or-Egg agreement
-
-The project carries forward the requested credits for **Lewis James Seals Jr., Liliabet Diana Windsor, Laila Star Seals, and Lawrence James Seals**. The forensic governance prompt and working agreement are documented in [docs/FORENSIC_CHICKEN_OR_EGG_SYSTEM_PROMPT.md](docs/FORENSIC_CHICKEN_OR_EGG_SYSTEM_PROMPT.md) and [docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md](docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md). They require evidence-led attribution, reciprocal concept/implementation provenance, preservation of originals, and clear limits on MIT and third-party institutional attribution. They do not imply Microsoft Research endorsement or a signed legal agreement.
-
-
-## Brute Genius addendum
-
-A production-context draft of the [Brute Genius Software License — Hold Harmless, Limited Warranty, and Production Risk Addendum](docs/BRUTE_GENIUS_HOLD_HARMLESS_WARRANTY_ADDENDUM.md) is available for legal review. It is a template, not an executed agreement or legal advice; bracketed business and jurisdiction terms must be completed before signature.
+*The objective is not to automate authorship. It is to make the structure, assumptions, evidence, and decisions behind authorship more legible.*
