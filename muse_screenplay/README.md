@@ -20,9 +20,9 @@ For generation: `pip install -e ".[models]"`. For remote datasets: `pip install 
 muse-screenplay models
 muse-screenplay datasets
 muse-screenplay validate --file examples/sample_scene.txt
-muse-screenplay evaluate --dataset offline --limit 2
+muse-screenplay evaluate --dataset offline --target-language en --limit 2
 muse-screenplay optimize --dataset offline --limit 2 --rounds 1
-muse-screenplay generate --model script-bart --prompt "INT. COFFEE SHOP - DAY"
+muse-screenplay generate --model script-bart --target-language en --prompt "INT. COFFEE SHOP - DAY"
 ```
 
 ## Python
@@ -33,8 +33,8 @@ from muse_screenplay.harness_artifacts import build_script_artifact
 from muse_screenplay.harness import ArtifactHarness
 artifact = build_script_artifact("script-bart")
 harness = ArtifactHarness("muse")
-result = harness.execute(artifact, {"prompt": "INT. COFFEE SHOP - DAY"})
-run = harness.evaluate(artifact, load_eval_dataset("offline", limit=2))
+result = harness.execute(artifact, {"prompt": "INT. COFFEE SHOP - DAY", "target_language": "en"})
+run = harness.evaluate(artifact, load_eval_dataset("offline", limit=2, target_language="en"))
 ```
 
 ## Models and datasets
