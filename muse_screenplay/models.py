@@ -22,7 +22,13 @@ class ModelSpec:
 
 
 MODELS = {
-    "summary-distilbart": ModelSpec(\n        "summary-distilbart", "sshleifer/distilbart-cnn-12-6",\n        "summarization", "bart",\n        notes="Summarization model; language coverage is unverified.",\n        languages={"declared": ["unverified"], "verified": [], "verification_method": None},\n    ),\n    "script-bart": ModelSpec(
+    "summary-distilbart": ModelSpec(
+        "summary-distilbart", "sshleifer/distilbart-cnn-12-6",
+        "summarization", "bart",
+        notes="Summarization model; language coverage is unverified.",
+        languages={"declared": ["unverified"], "verified": [], "verification_method": None},
+    ),
+    "script-bart": ModelSpec(
         "script-bart", "sahilnagaralu/movie-script-generator",
         "text2text-generation", "bart",
         notes="BART-base fine-tune; model-card language declaration requires verification.",
@@ -41,7 +47,16 @@ MODELS = {
         languages={"declared": ["unverified"], "verified": [], "verification_method": None},
     ),
 }
-ALIASES = {"bart": "script-bart", "default": "script-bart", "gpt2": "gpt2-screenplay", "mini": "mini-gpt-script"}\n\n# Non-default candidates require separate language, architecture, and license review.\nCANDIDATES = []
+
+ALIASES = {
+    "bart": "script-bart",
+    "default": "script-bart",
+    "gpt2": "gpt2-screenplay",
+    "mini": "mini-gpt-script",
+}
+
+# Non-default candidates require separate language, architecture, and license review.
+CANDIDATES = []
 
 
 def get_model(key):
