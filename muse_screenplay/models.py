@@ -41,7 +41,7 @@ MODELS = {
         languages={"declared": ["unverified"], "verified": [], "verification_method": None},
     ),
 }
-ALIASES = {"bart": "script-bart", "default": "script-bart", "gpt2": "gpt2-screenplay", "mini": "mini-gpt-script"}
+ALIASES = {"bart": "script-bart", "default": "script-bart", "gpt2": "gpt2-screenplay", "mini": "mini-gpt-script"}\n\n# Non-default candidates require separate language, architecture, and license review.\nCANDIDATES = []
 
 
 def get_model(key):
