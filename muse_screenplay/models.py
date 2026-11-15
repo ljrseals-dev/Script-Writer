@@ -1,4 +1,4 @@
-"""Auditable Hugging Face model registry; language coverage is not inferred."""
+"""Auditable Hugging Face registry; language coverage is never inferred as multilingual."""
 from dataclasses import asdict, dataclass, field
 
 
@@ -9,7 +9,9 @@ class ModelSpec:
     task: str
     family: str
     notes: str = ""
-    languages: dict = field(default_factory=lambda: {"declared": ["unverified"], "verified": [], "verification_method": None})
+    languages: dict = field(default_factory=lambda: {
+        "declared": ["unverified"], "verified": [], "verification_method": None
+    })
     tokenizer_languages: str = "unverified"
     fallback: str | None = None
     revision: str | None = None
@@ -23,19 +25,19 @@ MODELS = {
     "script-bart": ModelSpec(
         "script-bart", "sahilnagaralu/movie-script-generator",
         "text2text-generation", "bart",
-        notes="BART-base fine-tune; training-language coverage is unverified.",
+        notes="BART-base fine-tune; model-card language declaration requires verification.",
         languages={"declared": ["unverified"], "verified": [], "verification_method": None},
     ),
     "gpt2-screenplay": ModelSpec(
         "gpt2-screenplay", "AventIQ-AI/gpt-2-movie-script-writter",
         "text-generation", "gpt2",
-        notes="GPT-2 causal language model; English is expected, not independently evaluated.",
+        notes="GPT-2 English is expected from the model description; not independently evaluated.",
         languages={"declared": ["en"], "verified": [], "verification_method": None},
     ),
     "mini-gpt-script": ModelSpec(
         "mini-gpt-script", "pranikz/SLM-Movie-Script",
         "text-generation", "minigpt",
-        notes="Small Transformer trained on IsmaelMousa/movies; inherited language distribution is unverified.",
+        notes="Small Transformer trained on IsmaelMousa/movies; inherited language distribution unverified.",
         languages={"declared": ["unverified"], "verified": [], "verification_method": None},
     ),
 }
