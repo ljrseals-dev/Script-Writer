@@ -24,3 +24,11 @@ htmlcov/
 Thumbs.db
 *.swp
 *.swo
+
+# Screenplay module local assets and test tooling
+*.py[cod]
+data/*
+!data/.gitkeep
+models/
+*.bin
+*.safetensors

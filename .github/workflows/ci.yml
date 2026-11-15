@@ -1,5 +1,10 @@
 name: tests
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,9 +16,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install numpy
-      - run: python -m unittest discover -v tests
-      - run: python -m muse_gm check
-
-      - run: python -m py_compile muse_core/muse_engine.py muse_core/muse_lifestory.py muse_core/muse_wizard.py muse_core/muse_prose.py muse_core/muse_bridge.py
-      - run: python -m py_compile muse_gm/app.py
+      - name: Install Muse and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+          pip install -e ".[dev]"
+      - name: Run existing unittest suite
+        run: python -m unittest discover -v tests
+      - name: Run complete pytest suite
+        run: python -m pytest -q
+      - name: Validate MUSE-GM configuration
+        run: python -m muse_gm check
+      - name: Compile existing Python modules
+        run: |
+          python -m py_compile muse_core/muse_engine.py muse_core/muse_lifestory.py muse_core/muse_wizard.py muse_core/muse_prose.py muse_core/muse_bridge.py
+          python -m py_compile muse_gm/app.py

@@ -311,6 +311,8 @@ def make_handler(app: App):
                     return self._send(200, (HERE / "static" / "index.html").read_bytes(), "text/html")
                 if u.path == "/codec":
                     return self._send(200, (HERE / "static" / "realm_quant_models.html").read_bytes(), "text/html")
+                if u.path == "/screenplay-models":
+                    return self._send(200, (HERE / "static" / "screenplay_models.html").read_bytes(), "text/html")
                 if u.path == "/api/state":
                     return self._send(200, app.session(q.get("session")).public())
                 if u.path == "/api/artifact":
