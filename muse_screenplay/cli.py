@@ -17,7 +17,7 @@ def _artifact(a):
 def cmd_generate(a):
  from .harness import ArtifactHarness
  art=_artifact(a);r=ArtifactHarness("muse_cli").execute(art,{"prompt":a.prompt,"target_language":a.target_language})
- if a.json:_print({"artifact":art.to_dict(),"passed":r.passed,"duration_ms":r.duration_ms,"output":r.value,"error":r.error,"tests":[{"name":t.name,"passed":t.passed,"message":t.message} for t in r.test_results]})
+ if a.json:_print({"artifact":art.to_dict(),"passed":r.passed,"duration_ms":r.duration_ms,"output":r.value,"language_provenance":getattr(art.fn,"_last_language_provenance",None),"error":r.error,"tests":[{"name":t.name,"passed":t.passed,"message":t.message} for t in r.test_results]})
  elif r.error:print(r.error,file=sys.stderr)
  else:print(r.value)
  return 0 if r.passed else 1
