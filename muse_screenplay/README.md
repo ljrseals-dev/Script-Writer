@@ -65,3 +65,22 @@ Run the focused governance gate:
 pytest tests/test_governance_schema.py tests/test_governance_integration.py -q
 python scripts/integration_check.py
 ```
+
+## Model-loading security contract
+
+The loader applies two independent controls: (A) explicit PyTorch deserialization uses `torch.load(..., map_location="cpu", weights_only=True)`; (B) Transformers uses `trust_remote_code=False` and rejects remote `auto_map` architectures. Safetensors is preferred with `use_safetensors=True`. A legacy `.bin` fallback is explicit and must pass through `torch_load_safe()`; there is no unsafe fallback. A model requiring remote code is not loaded.
+
+These controls do not validate tensor correctness, source authenticity, output quality, licensing, bias, or copyright. SHA-256 checks byte identity only.
+
+## Language contract
+
+The model and dataset catalog declares language coverage without assuming multilingual behavior. Unverified entries remain `unverified`; English expectations are not evaluation results. Every generation and model-backed evaluation requires `target_language`; omission is an error. Inputs are not automatically translated. Language mismatches are recorded. Output provenance includes `requested` and `generated_in` (or `unverified` if detection is unavailable). Muse's internal nine-stage keys remain canonical English; symbol registers are locale/culture-specific.
+
+## Attribution
+
+Requested weights-integration innovation attribution to **Angela Seals** is preserved in [CITATION.cff](../CITATION.cff), the provenance ledger header, and the demo footer. Localized documentation must retain the original English attribution alongside any translation.
+
+## Upstream resources
+
+- Models: [sahilnagaralu/movie-script-generator](https://huggingface.co/sahilnagaralu/movie-script-generator), [AventIQ-AI/gpt-2-movie-script-writter](https://huggingface.co/AventIQ-AI/gpt-2-movie-script-writter), [pranikz/SLM-Movie-Script](https://huggingface.co/pranikz/SLM-Movie-Script).
+- Datasets: [IsmaelMousa/movies](https://huggingface.co/datasets/IsmaelMousa/movies), [rohitsaxena/MovieSum](https://huggingface.co/datasets/rohitsaxena/MovieSum), [aneeshas/imsdb-genre-movie-scripts](https://huggingface.co/datasets/aneeshas/imsdb-genre-movie-scripts).
