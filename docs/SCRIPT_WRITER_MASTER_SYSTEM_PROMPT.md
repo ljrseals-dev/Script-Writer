@@ -698,8 +698,9 @@ Current candidate registry guidance:
 - `sahilnagaralu/movie-script-generator`: language coverage `unverified` until model-card and corpus evidence are reviewed.
 - `AventIQ-AI/gpt-2-movie-script-writter`: `en` expected from its model description, not independently evaluated.
 - `pranikz/SLM-Movie-Script`: language distribution inherited from `IsmaelMousa/movies`, therefore `unverified` until dataset evidence is reviewed.
-- `IsmaelMousa/movies` and `rohitsaxena/MovieSum`: `unverified` unless their dataset cards and samples establish otherwise.
-- `aneeshas/imsdb-genre-movie-scripts`: English source-implied (`en`), not independently evaluated.
+- `IsmaelMousa/movies`: dataset card declares English (`en`), 1,172 rows, `Name` and `Script` fields, and Apache-2.0; this verifies the dataset declaration, not any generator's output.
+- `rohitsaxena/MovieSum`: 2,200 records across train/validation/test splits, `script` and `summary` fields, XML-formatted screenplay structure, and CC BY-NC 4.0; language remains `unverified` because the card lacks an explicit language declaration.
+- `aneeshas/imsdb-genre-movie-scripts`: 150-row training split with genre-specific Action, Horror, Sci-Fi, Comedy, and Drama columns; English is source-implied (`en`), while the card says more information is needed and license status remains unverified.
 
 Potential multilingual BART/mBART/NLLB models, translation aids, non-English screenplay corpora, and multilingual instruction models remain `candidate` only until model cards, language coverage, licenses, and actual behavior are verified. Translation models are not screenplay generators by default.
 
