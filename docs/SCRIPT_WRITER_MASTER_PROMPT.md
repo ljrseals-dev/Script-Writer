@@ -33,6 +33,7 @@ Build a screenplay workspace in which a selected language model supplies draft p
 ## Historical research standard
 
 - Separate sourced facts, disputed claims, editorial interpretation, and fictional invention.
+- Current code does not yet implement independent web or primary-source retrieval; users must supply research notes. Do not advertise the historical-search requirement as complete until a source-search adapter and source-capture tests exist.
 - Capture source title, publisher/creator, URL or stable identifier, access date, page or passage, and confidence when research records are added.
 - Mark missing support [RESEARCH NEEDED]; do not fabricate citations.
 - Gangster Manga is a research workflow and genre lens, not an authority that makes unsourced material historically accurate.
