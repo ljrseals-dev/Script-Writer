@@ -101,7 +101,7 @@ class Generator:
                 f"architecture: requires-remote-code — not loaded under weights-only policy ({self.spec.hf_id})"
             )
         self._tokenizer = AutoTokenizer.from_pretrained(self.spec.hf_id, **common)
-        model_cls = AutoModelForSeq2SeqLM if self.task == "text2text-generation" else AutoModelForCausalLM
+        model_cls = AutoModelForSeq2SeqLM if self.task in {"text2text-generation", "summarization"} else AutoModelForCausalLM
         try:
             self._model = model_cls.from_pretrained(
                 self.spec.hf_id, config=config, use_safetensors=True,
