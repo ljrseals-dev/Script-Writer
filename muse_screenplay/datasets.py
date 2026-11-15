@@ -1,6 +1,5 @@
-"""Offline-first prompt datasets with explicit remote/offline/fallback provenance."""
+"""Offline-first prompt datasets with explicit language and provenance boundaries."""
 from dataclasses import dataclass
-
 from .harness.dataset import EvalDataset
 from .governance import DatasetProvenance, EvalBoundary
 
@@ -12,33 +11,49 @@ OFFLINE_CASES = [
     {"prompt": "INT. RECORD STORE - AFTERNOON\n\nELI flips through vinyl.\n\nELI:", "metadata": {"genre": "comedy"}},
 ]
 
+
 @dataclass(frozen=True)
 class DatasetSpec:
     key: str
     hf_id: str
-    prompt_field: str
+    prompt_field: str | None
     expected_field: str | None = None
     split: str = "train"
     notes: str = ""
-    languages: dict = None
+    languages: dict | None = None
+
 
 DATASETS = {
-    "movies": DatasetSpec("movies", "IsmaelMousa/movies", "Script", notes="Full movie scripts; language distribution unverified.", languages={"declared": ["unverified"], "verified": [], "verification_method": None}),
-    "moviesum": DatasetSpec("moviesum", "rohitsaxena/MovieSum", "screenplay", "summary",
-                            notes="Screenplays and summaries; language distribution unverified.", languages={"declared": ["unverified"], "verified": [], "verification_method": None}),
-    "imsdb": DatasetSpec("imsdb", "aneeshas/imsdb-genre-movie-scripts", "script",
-                         notes="IMSDb source-implied English; not independently audited.", languages={"declared": ["en"], "verified": [], "verification_method": None}),
+    "movies": DatasetSpec(
+        "movies", "IsmaelMousa/movies", None,
+        notes="Dataset-card field mapping and language distribution require verification.",
+        languages={"declared": ["unverified"], "verified": [], "verification_method": None},
+    ),
+    "moviesum": DatasetSpec(
+        "moviesum", "rohitsaxena/MovieSum", "screenplay", "summary",
+        notes="Screenplays and summaries; language distribution unverified.",
+        languages={"declared": ["unverified"], "verified": [], "verification_method": None},
+    ),
+    "imsdb": DatasetSpec(
+        "imsdb", "aneeshas/imsdb-genre-movie-scripts", "script",
+        notes="IMSDb source-implied English; not independently audited.",
+        languages={"declared": ["en"], "verified": [], "verification_method": None},
+    ),
 }
 ALIASES = {"sample": "offline", "movie": "movies", "sum": "moviesum", "genre": "imsdb"}
 
-def _offline_dataset(limit, prompt_words, *, fallback_reason=None):
+
+def _offline_dataset(limit, prompt_words, target_language, *, fallback_reason=None):
     rows = []
     selected = OFFLINE_CASES[:limit if limit is not None else len(OFFLINE_CASES)]
     for case in selected:
         prompt = case["prompt"]
         if prompt_words is not None:
             prompt = " ".join(prompt.split()[:prompt_words])
-        rows.append({"prompt": prompt, "metadata": {**case["metadata"], "target_language": target_language}})
+        rows.append({
+            "prompt": prompt,
+            "metadata": {**case["metadata"], "target_language": target_language},
+        })
     if fallback_reason is None:
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.OFFLINE,
@@ -59,17 +74,25 @@ def _offline_dataset(limit, prompt_words, *, fallback_reason=None):
         name = "offline-fallback"
     return EvalDataset(name, rows, boundary=boundary)
 
+
 def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=None, *, target_language=None):
-    if not isinstance(target_language, str) or not target_language.strip():\n        raise ValueError("target_language is required for every screenplay evaluation/generation run")\n    key = ALIASES.get(name.strip().lower(), name.strip().lower())
+    if not isinstance(target_language, str) or not target_language.strip():
+        raise ValueError("target_language is required for every screenplay evaluation/generation run")
+    key = ALIASES.get(name.strip().lower(), name.strip().lower())
     if key == "offline":
-        return _offline_dataset(limit, prompt_words)
+        return _offline_dataset(limit, prompt_words, target_language)
     if key not in DATASETS:
         raise KeyError(f"Unknown dataset {name!r}")
     spec = DATASETS[key]
+    if spec.prompt_field is None:
+        return _offline_dataset(
+            limit, prompt_words, target_language,
+            fallback_reason="dataset field mapping is unverified; remote rows were not interpreted",
+        )
     try:
         from datasets import load_dataset
     except ImportError as exc:
-        return _offline_dataset(limit, prompt_words, fallback_reason=exc)
+        return _offline_dataset(limit, prompt_words, target_language, fallback_reason=exc)
     try:
         dataset = load_dataset(spec.hf_id, split=spec.split)
         if limit is not None:
@@ -86,10 +109,15 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
                 if spec.expected_field else None
             )
             metadata = {
-                key: row[key] for key in ("genre", "genres", "title", "movie_name")
-                if key in row and row[key] is not None
+                field: row[field]
+                for field in ("genre", "genres", "title", "movie_name")
+                if field in row and row[field] is not None
             }
-            rows.append({"prompt": prompt, "expected": expected, "metadata": {**metadata, "target_language": target_language}})
+            rows.append({
+                "prompt": prompt,
+                "expected": expected,
+                "metadata": {**metadata, "target_language": target_language},
+            })
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.REMOTE,
             dataset_id=spec.hf_id,
@@ -97,11 +125,15 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
         )
         return EvalDataset(key, rows, boundary=boundary)
     except Exception as exc:
-        return _offline_dataset(limit, prompt_words, fallback_reason=exc)
+        return _offline_dataset(limit, prompt_words, target_language, fallback_reason=exc)
+
 
 def dataset_catalog():
     return {
         "offline": {"hf_id": None, "notes": f"{len(OFFLINE_CASES)} built-in prompt seeds."},
-        **{key: {"hf_id": spec.hf_id, "notes": spec.notes}
-           for key, spec in DATASETS.items()},
+        **{
+            key: {"hf_id": spec.hf_id, "notes": spec.notes, "languages": spec.languages,
+                  "field_mapping_verified": spec.prompt_field is not None}
+            for key, spec in DATASETS.items()
+        },
     }
