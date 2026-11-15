@@ -158,6 +158,10 @@ The local writing-room application is designed around a simple governance distin
 
 The project architecture documents the engine, application, session state, and approval gates in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The live external language-model path and production deployment must be validated separately from tests that use a fake client or local fixtures.
 
+### Yellow LED Writer's Room interface
+
+The local MUSE-GM Writer's Room uses a warm yellow-LED palette on a near-black studio-console surface, with responsive layout, visible keyboard focus, and reduced-motion support. This is a presentation-only theme: it does not change ranking, evidence status, human approval authority, or server behavior. See [docs/UI_THEME_YELLOW_LED.md](docs/UI_THEME_YELLOW_LED.md) and [muse_gm/static/index.html](muse_gm/static/index.html).
+
 ## 8. Related projects in the Seals research and writing ecosystem
 
 The following repositories are related projects with distinct audiences and scopes. They are linked here for discovery; they are **not** represented as dependencies or integrated subsystems of Script-Writer.
