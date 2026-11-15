@@ -47,6 +47,18 @@ def _validate_language(target_language):
     return target_language
 
 
+class GeneratedText(str):
+    """String-compatible generation result carrying its language provenance."""
+
+    def __new__(cls, value, language_provenance):
+        instance = super().__new__(cls, value)
+        instance.language_provenance = dict(language_provenance)
+        return instance
+
+    def as_record(self):
+        return {"text": str(self), **self.language_provenance}
+
+
 @dataclass
 class GenerationConfig:
     max_length: int = 256
@@ -295,7 +307,7 @@ class Generator:
                 ],
             },
         )
-        return generated_text
+        return GeneratedText(generated_text, self._last_language_provenance)
 
     def provenance(self):
         return {
