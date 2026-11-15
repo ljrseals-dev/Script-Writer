@@ -4,9 +4,9 @@ from pathlib import Path
 from .config import settings
 from .datasets import dataset_catalog,load_eval_dataset
 from .format_check import analyze_script
-from .models import MODELS
+from .models import CANDIDATES, MODELS
 def _print(data):print(json.dumps(data,indent=2,ensure_ascii=False,default=str))
-def cmd_models(a):_print({k:v.__dict__ for k,v in MODELS.items()});return 0
+def cmd_models(a):_print({"generators":{k:v.to_dict() for k,v in MODELS.items()},"candidates":CANDIDATES});return 0
 def cmd_datasets(a):_print(dataset_catalog());return 0
 def cmd_validate(a):
  text=Path(a.file).read_text(encoding="utf-8") if a.file else sys.stdin.read()
@@ -48,5 +48,5 @@ def build_parser():
 def main(argv=None):
  a=build_parser().parse_args(argv);settings.apply_environment()
  try:return int(a.func(a))
- except (RuntimeError,KeyError) as exc:print(f"error: {exc}",file=sys.stderr);return 1
+ except (RuntimeError,KeyError,ValueError) as exc:print(f"error: {exc}",file=sys.stderr);return 1
 if __name__=="__main__":raise SystemExit(main())
