@@ -22,7 +22,7 @@ class ModelSpec:
 
 
 MODELS = {
-    "script-bart": ModelSpec(
+    "summary-distilbart": ModelSpec(\n        "summary-distilbart", "sshleifer/distilbart-cnn-12-6",\n        "summarization", "bart",\n        notes="Summarization model; language coverage is unverified.",\n        languages={"declared": ["unverified"], "verified": [], "verification_method": None},\n    ),\n    "script-bart": ModelSpec(
         "script-bart", "sahilnagaralu/movie-script-generator",
         "text2text-generation", "bart",
         notes="BART-base fine-tune; model-card language declaration requires verification.",
