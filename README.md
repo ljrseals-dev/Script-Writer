@@ -47,3 +47,21 @@ Check each model and dataset card for license and usage restrictions. Screenplay
 Lifecycle: `EXECUTE → CRITIQUE → MUTATE → COMPOSE → PROMOTE`.
 
 MIT for this project; model and dataset terms remain with their authors.
+
+## Governance and provenance
+
+The screenplay module uses a separate governance layer for concept/implementation provenance,
+evidence status, requested credits versus evidenced contributions, dataset boundaries,
+criteria versioning, and mutation audit. See [GOVERNANCE.md](GOVERNANCE.md).
+
+The hash-chained ledger defaults to `.muse/ledger.jsonl`; export snapshots are written to
+`data/ledger/`. A ledger hash proves byte consistency, not authorship or ownership. Remote
+dataset failures are explicitly marked as fallback evaluations and must not be presented as
+remote results.
+
+Run the focused governance gate:
+
+```bash
+pytest tests/test_governance_schema.py tests/test_governance_integration.py -q
+python scripts/integration_check.py
+```
