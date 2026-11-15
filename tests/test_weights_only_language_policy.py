@@ -3,7 +3,7 @@ import types
 
 import pytest
 
-from muse_screenplay.generators import Generator, _validate_language, torch_load_safe
+from muse_screenplay.generators import GeneratedText, Generator, _validate_language, torch_load_safe
 from muse_screenplay.models import MODELS
 from muse_screenplay.symbol_registers import (
     SymbolRegister, get_symbol_register, register_symbol_context,
@@ -14,6 +14,20 @@ def test_registry_never_claims_multilingual_without_evidence():
     for spec in MODELS.values():
         assert spec.languages["verified"] == []
         assert "multilingual" not in spec.languages["declared"]
+
+
+def test_generated_text_carries_language_provenance():
+    output = GeneratedText(
+        "A screenplay line",
+        {"requested": "fr", "generated_in": "unverified", "language_mismatch": None},
+    )
+    assert isinstance(output, str)
+    assert output.as_record() == {
+        "text": "A screenplay line",
+        "requested": "fr",
+        "generated_in": "unverified",
+        "language_mismatch": None,
+    }
 
 
 def test_target_language_is_mandatory_and_validated():
