@@ -24,7 +24,8 @@ class DatasetSpec:
     notes: str = ""
     languages: dict | None = None
     genre_fields: tuple[str, ...] = ()
-    license_status: str = "unverified"\n    fallback: str | None = None
+    license_status: str = "unverified"
+    fallback: str | None = None
 
 
 DATASETS = {
@@ -152,7 +153,8 @@ def dataset_catalog():
                 "notes": spec.notes,
                 "languages": spec.languages,
                 "field_mapping_verified": bool(spec.prompt_field or spec.genre_fields),
-                "license_status": spec.license_status,\n                "fallback": spec.fallback,
+                "license_status": spec.license_status,
+                "fallback": spec.fallback,
             }
             for key, spec in DATASETS.items()
         },
