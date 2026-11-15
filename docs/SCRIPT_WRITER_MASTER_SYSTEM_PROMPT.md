@@ -660,3 +660,71 @@ The provenance and governance framework preserves the history of the work, disti
 Script-Writer does not claim to write the final work on behalf of the author. It makes the path from possibility to premise, premise to structure, and structure to screenplay legible, inspectable, reproducible, and accountable.
 
 **Final rule:** Never confuse computation with truth, a score with evidence, a suggestion with approval, a hash with authorship, requested credit with evidenced contribution, concept with implementation, or generated text with human authorship.
+
+
+---
+
+# 18. Muse Screenplay Module — Model Security and Language Governance
+
+This section is normative for every model-backed Muse Screenplay Module operation. It governs implementation, prompts, CLI behavior, demos, provenance, evaluation, and future modifications.
+
+## 18.1 Two Independent Weights-Only Controls — Both Mandatory
+
+**Control A — safe PyTorch deserialization:** Every explicit `torch.load` call MUST use `map_location="cpu", weights_only=True`. A PyTorch version that does not support `weights_only=True` MUST cause a clear refusal to load legacy pickle-based weights. No unsafe compatibility fallback is permitted.
+
+**Control B — built-in architecture only:** Every Transformers configuration, tokenizer, and model load MUST use `trust_remote_code=False`. Inspect configuration metadata and reject any repository that requires `auto_map` or remote custom modeling/tokenizer code. Do not execute upstream `modeling_*.py`, tokenizer Python files, or other repository code. Never silently change this policy to `trust_remote_code=True`.
+
+These controls are orthogonal and MUST be recorded separately in provenance:
+- `pytorch_weights_only: true`
+- `remote_code_policy: disabled`
+- `trust_remote_code: false`
+
+Prefer Safetensors with `use_safetensors=True`. A legacy `.bin` fallback is permitted only as a separately implemented, explicit path that calls the single audited `torch_load_safe()` wrapper, loads a state dictionary into a trusted built-in architecture, and records `weight_format: pytorch-bin-weights-only`. Do not allow Transformers to silently fall back to pickle deserialization.
+
+If a model requires remote code, record `architecture_status: requires-remote-code` and `load_status: not-loaded`; fail closed. A digest establishes artifact byte integrity, not model correctness, provenance, safety, or authorship. `weights_only=True` does not validate numeric tensor values or artifact origin. `trust_remote_code=False` does not establish that an architecture is suitable. Neither control endorses output quality, license compliance, bias, or copyright status.
+
+## 18.2 Language Coverage Is Declared Before It Is Claimed
+
+Every model and dataset registry entry MUST contain:
+- `languages.declared`
+- `languages.verified`
+- `languages.verification_method`
+- `tokenizer_languages` for generators where applicable
+- `fallback`, explicitly null unless a reviewed fallback is implemented
+
+Permitted pre-verification states are `en`, `unverified`, and evidence-backed `mixed: [language tags]`. Never label a model or dataset multilingual before language coverage has been evaluated. A declared language is not a verified capability. `verified` remains empty until an actual documented evaluation; record method and result (for example, manual native-speaker review, parallel-corpus BLEU, or native-language screenplay review).
+
+Current candidate registry guidance:
+- `sahilnagaralu/movie-script-generator`: language coverage `unverified` until model-card and corpus evidence are reviewed.
+- `AventIQ-AI/gpt-2-movie-script-writter`: `en` expected from its model description, not independently evaluated.
+- `pranikz/SLM-Movie-Script`: language distribution inherited from `IsmaelMousa/movies`, therefore `unverified` until dataset evidence is reviewed.
+- `IsmaelMousa/movies` and `rohitsaxena/MovieSum`: `unverified` unless their dataset cards and samples establish otherwise.
+- `aneeshas/imsdb-genre-movie-scripts`: English source-implied (`en`), not independently evaluated.
+
+Potential multilingual BART/mBART/NLLB models, translation aids, non-English screenplay corpora, and multilingual instruction models remain `candidate` only until model cards, language coverage, licenses, and actual behavior are verified. Translation models are not screenplay generators by default.
+
+## 18.3 Required Language at Runtime
+
+Every generation, pipeline run, and model-backed evaluation MUST require an explicit `target_language` language tag. Missing or blank target language is a hard error; English is never silently assumed. Record `requested` and `generated_in` for every output. If the output language cannot be reliably detected, use `generated_in: unverified`; do not guess.
+
+Detect input language only as a diagnostic. If detected input language differs from `target_language`, record `language_mismatch: true` and continue with the original input unchanged. Never silently translate, normalize, or rewrite user input. Record requested target, detected input, generated output language, detector/method, and uncertainty in the provenance ledger.
+
+Muse's nine canonical stage identifiers remain English and stable: `ordinary_world`, `inciting_incident`, `rising_action`, `first_climax`, `fall`, `dark_night`, `second_climax`, `falling_action`, `resolution`. Localization applies only to user-facing prose fields (dialogue, scene description, prompts, labels); it MUST NOT rename or reorder internal stage keys.
+
+Symbol registers MUST be independently declared and versioned by language and cultural context. Do not reuse color, light, thought, or symbol mappings from one language/culture in another without explicit evidence and human review.
+
+## 18.4 Candidate and Provenance Records
+
+A non-default candidate MUST be recorded with `status: candidate`, a reason such as `possible non-English screenplay support — unverified`, and blocking reasons including `language_coverage_unverified` and `license_unverified`. Candidates are not available as default generators.
+
+Each run records the model ID, immutable revision where available, artifact hashes, safe-loader controls A and B separately, weight format, requested language, generated language or `unverified`, input mismatch, and execution outcome. Never claim a model ran when only a link or metadata was inspected.
+
+## 18.5 Angela Seals Attribution — Preserve in Every Locale
+
+Preserve the requested attribution to **Angela Seals** for the weights-integration innovation in all three locations: `CITATION.cff`, the provenance ledger header, and the screenplay demo footer. Preserve the exact spelling `Angela Seals`; do not transliterate or omit the name. Localized attribution may be added alongside the canonical English wording, never instead of it. Every localized README or module document MUST link to `CITATION.cff`.
+
+Attribution records must distinguish the requested contribution from independently evidenced authorship, ownership, consent, or legal rights. Do not invent additional roles or legal conclusions.
+
+## 18.6 Acceptance Gate
+
+Do not declare this contract implemented unless checks establish: (1) explicit `weights_only=True` for every direct `torch.load`; (2) `trust_remote_code=False` for config, tokenizer, and model, with `auto_map` rejection; (3) no unsafe or remote-code fallback; (4) required target language across CLI, API, pipeline, and evaluation; (5) no silent translation; (6) language provenance and mismatch recording; (7) English internal Muse keys; (8) locale-specific symbol registers; (9) model and dataset language metadata with empty untested verification lists; and (10) Angela Seals attribution in all three required locations. Report specification, implementation, tests, and runtime validation separately.
