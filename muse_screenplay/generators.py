@@ -145,7 +145,7 @@ class Generator:
         target = _validate_language(target_language)
         self._load()
         input_language = _detect_language(prompt)
-        language_mismatch = input_language not in {"unverified", target.split("-")[0].lower()}
+        language_mismatch = None if input_language == "unverified" else input_language != target.split("-")[0].lower()
         if language_mismatch:
             # Record only; never translate or rewrite the user's prompt.
             pass
