@@ -38,7 +38,7 @@ def _offline_dataset(limit, prompt_words, *, fallback_reason=None):
         prompt = case["prompt"]
         if prompt_words is not None:
             prompt = " ".join(prompt.split()[:prompt_words])
-        rows.append({"prompt": prompt, "target_language": target_language, "metadata": case["metadata"]})
+        rows.append({"prompt": prompt, "metadata": {**case["metadata"], "target_language": target_language}})
     if fallback_reason is None:
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.OFFLINE,
@@ -89,7 +89,7 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
                 key: row[key] for key in ("genre", "genres", "title", "movie_name")
                 if key in row and row[key] is not None
             }
-            rows.append({"prompt": prompt, "expected": expected, "target_language": target_language, "metadata": metadata})
+            rows.append({"prompt": prompt, "expected": expected, "metadata": {**metadata, "target_language": target_language}})
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.REMOTE,
             dataset_id=spec.hf_id,
