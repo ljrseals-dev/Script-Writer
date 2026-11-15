@@ -104,6 +104,8 @@ def generate(brief: ScriptBrief, *, model_key: str, seed: int = 17,
     result = generator(prompt, do_sample=False, num_beams=1,
                        max_new_tokens=max_new_tokens, truncation=True)
     generated = result[0].get("generated_text") or result[0].get("summary_text") or ""
+    if generated.startswith(prompt):
+        generated = generated[len(prompt):].lstrip()
     if not generated.strip():
         raise RuntimeError("The selected model returned empty text")
     spec = get_model(model_key)
