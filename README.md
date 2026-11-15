@@ -25,6 +25,7 @@ Python 3.10–3.12:
     python -m venv .venv
     . .venv/bin/activate
     pip install -e ".[dev]"
+    pip install -e ".[app]"
     python -m unittest discover -v tests
     python -m muse_gm.engine check
 
@@ -61,7 +62,7 @@ For the research basis and mathematical derivation, see docs/paper/ and docs/MAT
 
 ## Historical accuracy and source discipline
 
-Use Gangster Manga / Brute Genius to help directors, actors, and screenwriters locate and interrogate relevant historical context. Historical claims should be traceable to sources. Keep sourced fact, disputed claim, interpretation, and fictional invention distinct. Missing evidence must be marked for research; neither a model response nor an MUSE-GM score is a citation.
+The intended Brute Genius workflow is to help directors, actors, and screenwriters search and interrogate historical context. **Current implementation boundary:** MUSE-GM performs exhaustive search over its configured story variables and rubric; the local chat toolset does not yet provide an independent web/primary-source retrieval tool. It therefore cannot itself verify historical facts or guarantee historical accuracy. Until source retrieval is implemented, provide source-backed research notes manually and preserve source details. Keep sourced fact, disputed claim, interpretation, and fictional invention distinct. Missing evidence must be marked for research; neither a model response nor an MUSE-GM score is a citation.
 
 ## Reproducibility and limits
 
