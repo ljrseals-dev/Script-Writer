@@ -8,6 +8,7 @@ from .generators import GenerationConfig, Generator
 from .harness import ConstraintLevel, TestCase, load_harness
 from .harness import criteria_fingerprint
 
+
 def _normalize_attribution(attribution):
     if attribution is None:
         return {
@@ -33,11 +34,13 @@ def _normalize_attribution(attribution):
         "limitations": list(attribution.get("limitations", [])),
     }
 
+
 @lru_cache(maxsize=8)
 def _generator(key, length, temp, top_p):
     return Generator(key, generation=GenerationConfig(
         max_length=length, temperature=temp, top_p=top_p,
     ))
+
 
 def script_tests():
     return [
@@ -49,6 +52,7 @@ def script_tests():
             analyze_script(str(value)).scene_headings or analyze_script(str(value)).dialogue_lines
         ), ConstraintLevel.WARN, "no scene heading or dialogue"),
     ]
+
 
 def build_script_artifact(model_key=None, *, max_length=None, temperature=None, top_p=None,
                           name=None, attribution=None, criteria_spec=None):
@@ -64,10 +68,12 @@ def build_script_artifact(model_key=None, *, max_length=None, temperature=None, 
         if not target_language:
             raise ValueError("target_language is required; generation is never defaulted to English")
         overrides = {
-            key: value for key, value in kwargs.items()
-            if key in GenerationConfig.__dataclass_fields__
+            name: value for name, value in kwargs.items()
+            if name in GenerationConfig.__dataclass_fields__
         }
-        output = generator.generate(prompt, target_language=target_language, **overrides)\n        generate._last_language_provenance = generator._last_language_provenance\n        return output
+        output = generator.generate(prompt, target_language=target_language, **overrides)
+        generate._last_language_provenance = generator._last_language_provenance
+        return output
 
     generator = _generator(key, length, temp, probability)
     tests = script_tests()
@@ -88,7 +94,7 @@ def build_script_artifact(model_key=None, *, max_length=None, temperature=None, 
     return load_harness().create_code_artifact(
         name or f"script_generator[{key}]",
         generate,
-        "prompt: str -> script: str",
+        "prompt: str, target_language: str -> script: str",
         default_evaluator,
         tests,
         {"temperature": temp, "top_p": probability, "max_length": length},
@@ -96,21 +102,26 @@ def build_script_artifact(model_key=None, *, max_length=None, temperature=None, 
         criteria_spec=spec,
     )
 
+
 def build_summary_artifact(model_id="sshleifer/distilbart-cnn-12-6", *, attribution=None):
     attribution_record = _normalize_attribution(attribution)
-
     if model_id != "sshleifer/distilbart-cnn-12-6":
         raise ValueError("Only the registered built-in DistilBART summarizer is allowed")
+
     def summarize(prompt="", target_language=None, max_length=130, min_length=30):
         if not target_language:
             raise ValueError("target_language is required; summarization is never defaulted to English")
         generator = Generator("summary-distilbart", generation=GenerationConfig(
             max_new_tokens=max_length, do_sample=False,
         ))
-        output = generator.generate(prompt[:3000], target_language=target_language, min_length=min_length)\n        summarize._last_language_provenance = generator._last_language_provenance\n        return output
+        output = generator.generate(
+            prompt[:3000], target_language=target_language, min_length=min_length
+        )
+        summarize._last_language_provenance = generator._last_language_provenance
+        return output
 
     return load_harness().create_code_artifact(
-        "script_summarizer", summarize, "prompt -> summary",
+        "script_summarizer", summarize, "prompt: str, target_language: str -> summary: str",
         tests=[TestCase("non_empty_summary", lambda value: len(str(value).split()) >= 5)],
         provenance={
             "hf_id": model_id, "task": "summarization",
@@ -120,6 +131,7 @@ def build_summary_artifact(model_id="sshleifer/distilbart-cnn-12-6", *, attribut
         },
         criteria_spec={"task": "summarization", "minimum_words": 5},
     )
+
 
 def build_default_pipeline(model_key=None, *, attribution=None):
     harness = load_harness()
