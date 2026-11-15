@@ -67,7 +67,7 @@ def build_script_artifact(model_key=None, *, max_length=None, temperature=None, 
             key: value for key, value in kwargs.items()
             if key in GenerationConfig.__dataclass_fields__
         }
-        return generator.generate(prompt, target_language=target_language, **overrides)
+        output = generator.generate(prompt, target_language=target_language, **overrides)\n        generate._last_language_provenance = generator._last_language_provenance\n        return output
 
     generator = _generator(key, length, temp, probability)
     tests = script_tests()
@@ -107,7 +107,7 @@ def build_summary_artifact(model_id="sshleifer/distilbart-cnn-12-6", *, attribut
         generator = Generator("summary-distilbart", generation=GenerationConfig(
             max_new_tokens=max_length, do_sample=False,
         ))
-        return generator.generate(prompt[:3000], target_language=target_language, min_length=min_length)
+        output = generator.generate(prompt[:3000], target_language=target_language, min_length=min_length)\n        summarize._last_language_provenance = generator._last_language_provenance\n        return output
 
     return load_harness().create_code_artifact(
         "script_summarizer", summarize, "prompt -> summary",
