@@ -72,7 +72,7 @@ def build_screenplay_pipeline(model_key=None, *, genre=None, tone=None):
         base = artifact.fn
 
         def genre_wrapper(prompt="", **kwargs):
-            return base(prompt=build_genre_conditioned_prompt(prompt, genre, tone), **kwargs)
+            output = base(prompt=build_genre_conditioned_prompt(prompt, genre, tone), **kwargs)\n            genre_wrapper._last_language_provenance = getattr(base, "_last_language_provenance", None)\n            return output
 
         artifact.fn = genre_wrapper
         artifact.evaluator = composite_evaluator(
