@@ -23,7 +23,7 @@ def cmd_generate(a):
  return 0 if r.passed else 1
 def cmd_evaluate(a):
  from .harness import ArtifactHarness
- art=_artifact(a);ds=load_eval_dataset(a.dataset,a.limit);run=ArtifactHarness("muse_cli").evaluate(art,ds)
+ art=_artifact(a);ds=load_eval_dataset(a.dataset,a.limit,target_language=a.target_language);run=ArtifactHarness("muse_cli").evaluate(art,ds)
  if a.json:_print({"artifact":art.to_dict(),"dataset":ds.name,"mean_score":run.mean_score,"pass_rate":run.pass_rate,"rows":[{"prompt":x.prompt[:120],"score":x.score,"passed":x.passed,"error":x.error,"output":str(x.output)[:400]} for x in run.rows]})
  else:print(f"dataset={ds.name} cases={len(ds)} mean={run.mean_score:.4f} pass_rate={run.pass_rate:.2%}")
  return 0 if run.pass_rate>=a.min_pass_rate else 1
@@ -38,9 +38,9 @@ def build_parser():
  for name,fn in (("models",cmd_models),("datasets",cmd_datasets)):
   q=s.add_parser(name);q.set_defaults(func=fn)
  q=s.add_parser("validate");q.add_argument("--file");q.add_argument("--stdin",action="store_true");q.add_argument("--threshold",type=float,default=.5);q.set_defaults(func=cmd_validate)
- q=s.add_parser("generate");q.add_argument("--model",default=settings.default_model);q.add_argument("--prompt",required=True);q.add_argument("--max-length",type=int,default=settings.max_length);q.add_argument("--temperature",type=float,default=settings.temperature);q.add_argument("--top-p",type=float,default=settings.top_p);q.add_argument("--json",action="store_true");q.set_defaults(func=cmd_generate)
+ q=s.add_parser("generate");q.add_argument("--model",default=settings.default_model);q.add_argument("--prompt",required=True);q.add_argument("--target-language",required=True,help="Required BCP-47-style output language tag");q.add_argument("--max-length",type=int,default=settings.max_length);q.add_argument("--temperature",type=float,default=settings.temperature);q.add_argument("--top-p",type=float,default=settings.top_p);q.add_argument("--json",action="store_true");q.set_defaults(func=cmd_generate)
  for name,fn in (("evaluate",cmd_evaluate),("optimize",cmd_optimize)):
-  q=s.add_parser(name);q.add_argument("--model",default=settings.default_model);q.add_argument("--dataset",default=settings.default_dataset);q.add_argument("--limit",type=int,default=settings.dataset_limit);q.add_argument("--json",action="store_true")
+  q=s.add_parser(name);q.add_argument("--model",default=settings.default_model);q.add_argument("--dataset",default=settings.default_dataset);q.add_argument("--limit",type=int,default=settings.dataset_limit);q.add_argument("--target-language",required=True,help="Required BCP-47-style target language");q.add_argument("--json",action="store_true")
   if name=="evaluate":q.add_argument("--min-pass-rate",type=float,default=0.0)
   else:q.add_argument("--rounds",type=int,default=3)
   q.set_defaults(func=fn)
