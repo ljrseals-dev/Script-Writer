@@ -1,186 +1,87 @@
-<div align="center">
+# Script-Writer — Muse by Rihanna
 
-# Script Writer powered by Muse by Rhianna
+**A deterministic story-development system with model-assisted screenplay drafting.**
 
-![HBO Styled Gangster Scene](images/gangster1.jpg)
+Script-Writer combines Muse's fixed narrative architecture, the MUSE-GM / Brute Genius decision surface, and optional Hugging Face language models. These components have separate responsibilities: Muse governs story structure; MUSE-GM enumerates and ranks premise configurations; the selected neural model drafts prose within that structure.
 
+## Project architecture
 
-### A deterministic story-development and screenplay-writing workspace
+| Layer | Responsibility |
+|---|---|
+| Muse by Rihanna | Nine-stage double-climax narrative pyramid and symbolic registers: colors, lights, thoughts, symbols |
+| Gangster Manga / Brute Genius | Genre and historical-research lens: territory, hierarchy, loyalty, debt, complicity, succession, and power |
+| MUSE-GM | Exhaustive factorial premise enumeration, rubric scoring, sensitivity analysis, and reproducible exports |
+| Hugging Face | Optional screenplay language models; weights draft prose, not story rules |
+| Human review | Historical verification, rights review, editorial revision, and final approval |
 
-**4,445,280 origins. One instrument. No dice.**
+The nine Muse stages are Ordinary World → Inciting Incident → Rising Action → First Climax (False Victory) → Fall → Dark Night → Second Climax (True Choice) → Falling Action → Resolution.
 
-[![tests](https://github.com/ljrseals-dev/bang/actions/workflows/ci.yml/badge.svg)](https://github.com/ljrseals-dev/bang/actions/workflows/ci.yml)
-![python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue)
-![license](https://img.shields.io/badge/license-MIT-green)
-![evidence](https://img.shields.io/badge/evidence-rubric%20judgments%2C%20not%20measurements-orange)
-
-*Project attribution: Lewis James Seals Jr., Liliabet Diana Windsor, Laila Star Seals, and Lawrence James Seals.*
-
-</div>
-
----
-
-Fourteen diaspora nodes. Eight eras. Nine economies. Seven pressures. Five media frames. Six family systems. Seven archetypes. Three effects.
-Multiply them. That is the whole space of origins, and it is finite.
-
-Script Writer uses the MUSE-GM decision-surface engine; it does not sample the story space. It **walks** it. Every combination is scored, ranked, hashed and exported to SPSS. Two weight profiles ship with it, sensitivity analysis is built in, and every run leaves a manifest you can reproduce to the sixth decimal.
-
-![Historical Street Scene](images/gangster2.jpg)
-
-> **Stratagem №1: don't sample the story. Exhaust it.**
-> Every screenwriter guesses. This one enumerates. Zero of the 4,445,280 possible origins are left to chance.
-
-**Read the paper:** [Using Brute Force: Deterministic Genesis of the Origins of Gangsters](docs/paper/using-brute-force-deterministic-genesis.md) · [Addendum: baseline results](docs/paper/ADDENDUM-baseline-results.md) · [The mathematics](docs/MATH.md)
-
-## Contents
-[What it is](#what-it-is) · [Credits & agreement](#credits--chicken-or-egg-agreement) · [Baseline results](#baseline-results) · [Quick start](#quick-start) · [Usage](#usage) · [The chat app](#the-chat-app) · [How it works](#how-it-works) · [Evidence and limits](#evidence-and-limits) · [Integrity and reproducibility](#integrity-and-reproducibility) · [Repository layout](#repository-layout) · [Roadmap](#roadmap) · [Cite](#cite) · [Brute Genius addendum](#brute-genius-addendum) · [License](#license)
-
-## What it is
-- **An engine.** A full-factorial enumeration of eight nominal variables (a story world declared like an SPSS Variable View), scored by six components built from 24 rubric tables.
-- **An instrument, not an oracle.** The rubric is human judgment, stated plainly, versioned and hashed. Every manifest says so in machine-readable text: `rubric_encoded_judgments_not_measured_data`.
-- **A workflow.** A local chat app that uses the engine to walk a writer through ranking, human approval, causal spine, audit, characters, tonal sheet and script, with the gates enforced in code.
-
-## Baseline results
-Rank-1 premises under the `master` profile (rubric SHA-256 `04c2bcf7dff0051f…`). Full lists: [`results/baseline/`](results/baseline/).
-
-| Target | Rank-1 premise (node · era · economy · pressure · media · family · archetype) | Score |
-|---|---|---|
-| Humanized | Harlem · 1940s-50s numbers/labor · policy/numbers · police surveillance · Black press counter-narrative · matriarch-led · ethical rebel loner | 0.9157 |
-| Dreaded | Kingston JA · 1980s Yardie/garrison · drug corridor · political garrison patronage · state intelligence file · estranged-return · enforcer | 0.9160 |
-| Pivot | Harlem · 1940s-50s numbers/labor · policy/numbers · police surveillance · state intelligence file · matriarch-led · heir | 0.8981 |
-
-**Read these with care.** Under 0.05 weight shifts the exact rank-1 premise changes in 1 of 12 variants (humanized), 4 of 12 (dreaded) and 6 of 12 (pivot). The stable finding is the neighborhood (Harlem 1940s policy; Kingston 1980s drug corridor), not a single cell. See the [addendum](docs/paper/ADDENDUM-baseline-results.md).
-
-## Muse by Rhianna foundation + Gangster Manga theme
-
-This repository now includes the extracted Muse narrative core from
-[stunning-happiness](https://github.com/ljrseals-dev/stunning-happiness), preserved
-under `muse_core/` and presented as the foundation of Script Writer. It tracks the nine-stage double-climax pyramid and the four
-symbolic registers (colors, lights, thoughts, symbols). The existing MUSE-GM
-factorial decision-surface engine remains separate and unchanged.
-
-The `gangster_manga` theme is a sidecar: it interprets Muse symbols through
-territory, hierarchy, loyalty, debt, complicity, succession, and the cost of power.
-It does not alter Muse's base symbol meanings or force a story outcome.
-
-English is the canonical model/prompt language. The theme includes localized
-writer-facing prompts for English, Simplified Chinese, Spanish, Japanese, and
-French; unsupported locales fall back to English. Model weights are not bundled
-or downloaded implicitly. See [the integration contract](docs/MUSE_RIHANNA_GANGSTER_MANGA.md).
-
-Quick theme consultation:
-
-```bash
-python -m muse_core --stage ordinary_world --language en --symbol colors:black --symbol symbols:crown
-python -m unittest tests.test_muse_bridge -v
-```
+Gangster Manga remains a sidecar: it interprets Muse symbols and asks genre-specific questions without changing Muse's base meanings or forcing a plot outcome. English is canonical for model prompts, internal reasoning, model identifiers, and evaluation. Writer-facing output can be localized.
 
 ## Quick start
-```bash
-git clone https://github.com/ljrseals-dev/bang && cd bang
-pip install -e .            # engine only (needs numpy)
-pip install -e ".[app]"     # plus the chat app (needs the anthropic package)
-python -m unittest discover -v tests
-```
-Without installing, run `python -m muse_gm ...` from the repository root.
 
-## Usage
-```bash
-muse-gm variables --values                                  # the Variable View with value labels
-muse-gm check                                               # validate config, size, hashes
-muse-gm run --top 5                                         # all 4,445,280 cases, top 5 per target
-muse-gm run --effect pivot --distinct node,era,economy      # best premise per core, not near-duplicates
-muse-gm run --select node=Harlem --select era=3 --out runs/001
-muse-gm sensitivity                                         # master vs equal, plus 12 weight shifts
-```
-`--out` writes `results.jsonl`, `manifest.json`, a numeric-coded CSV, a labeled CSV and an SPSS `.sps` file. `--select` restricts the space (exhaustive inside it). Edit [`muse_gm/data/variables.json`](muse_gm/data/variables.json) and [`rubric.json`](muse_gm/data/rubric.json) to change the world; the code does not move.
+Python 3.10–3.12:
 
-## The chat app
-```bash
-export ANTHROPIC_API_KEY=...        # your key, billed to you, never written to disk
-muse-gm-app                         # http://127.0.0.1:8484
-```
-- Approval of a configuration is a **button you click**. The model has no approve tool.
-- `save_artifact` refuses a script until the spine, audit, characters and tonal sheet are saved.
-- Rankings come only from the engine. The server binds to 127.0.0.1 and never echoes your key.
-- **Status:** the tool loop, gates and HTTP layer are tested against a fake client. The live Claude API path has not been run.
+    python -m venv .venv
+    . .venv/bin/activate
+    pip install -e ".[dev]"
+    python -m unittest discover -v tests
+    python -m muse_gm.engine check
 
-## How it works
-```
- variables.json ─┐                       ┌─> ranked lists (per effect target)
-                 ├─> 4,445,280 cases ──> 6 components ──> weighted score ──┤
- rubric.json  ───┘   (full factorial)    (24 tables)       (profile)        └─> manifest + hashes + CSV/SPSS
-```
-Tables are broadcast onto one 8-D array, so there is no row-per-case table in memory. Linear and geometric combinations are defined in the rubric; weights must sum to 1; non-finite or out-of-range values stop the run. The full derivation, with a worked example, is in [`docs/MATH.md`](docs/MATH.md).
+Install optional neural-generation dependencies:
 
-## Evidence and limits
-- **Judgments, not data.** Every table entry is an editorial judgment. The mathematics is exact; the inputs are not measurements.
-- **Fragile at the margin.** Exact winners move under small weight shifts (above). Use `--distinct` and `sensitivity`.
-- **Documented-anchor bias.** Less-saturated nodes (Salvador, Accra, Marseille, Lagos) score lower mostly on documented-anchor plausibility. Revisit them with sourced research.
-- **Untested paths.** The SPSS export has not been run in SPSS; the chat app has not been run against the live API; CI covers Linux only.
-- **Not an audience model.** It does not know whether a script will be good.
+    pip install -e ".[models]"
 
-## Integrity and reproducibility
-- Every run records the SHA-256 of both config files, the command, profile, weights, selection, and versions.
-- `tests/test_baseline.py` re-runs the engine and compares the top five per target with `results/baseline/` on every CI run.
-- A release zip ships with `SHA256SUMS`; `sha256sum -c SHA256SUMS` detects truncated or altered files.
+List models:
 
-## Repository layout
-```
-muse_gm/            engine.py (scoring + CLI), app.py (chat server), data/ (variables + rubric), prompts/, static/
-tests/              27 tests: engine, app gates, baseline reproducibility
-docs/paper/         the paper and the baseline-results addendum
-docs/               MATH.md, ARCHITECTURE.md, ROADMAP.md, source/ (original Master Prompt export)
-results/            baseline/ (current run), prototype/ (first-draft output)
-logs/               run records, incl. the Vintage harness dry-run audit (see logs/README.md)
-prototype/          first-draft scoring script, kept for provenance
-.github/workflows/  CI on Python 3.10-3.12
-```
+    muse-screenplay models
 
-## Roadmap
-Penalty terms, the guilt/forgiveness/containment dimensions, staged search for spaces beyond 10⁹, and machine-checkable refusal conditions. Open decisions are listed in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Draft a screenplay:
 
-## Cite
-See [`CITATION.cff`](CITATION.cff). Lewis James Seals Jr. and Laila Star Seals, *MUSE-GM: Deterministic Genesis of the Origins of Gangsters*, 2026.
+    muse-screenplay generate --title "The Long Return" --premise "An estranged heir returns to a neighborhood changed by political patronage." --period "1980s" --location "Kingston, Jamaica" --model script-bart --seed 17 --out runs/the-long-return.json
 
-## License
-MIT. See [`LICENSE`](LICENSE).
+Model weights are not bundled. The default is local-cache-only. Add --download to permit the CLI to fetch a selected model from Hugging Face. Pin --revision to a model commit for stronger reproducibility.
 
----
-*Brute force, applied to the entire space at once, is craft made legible.*
+## Browser model catalog
 
+Run the local MUSE-GM application, then open http://127.0.0.1:8484/screenplay-models. The page links to supported Hugging Face model repositories so users can inspect model cards and download files through their browser. Browser downloads do not automatically install weights into the local Python cache. Use the CLI's explicit --download option or a populated cache to load weights into the generation runtime.
 
-## Realm of Quant audio codec (optional)
+## Brute Genius / MUSE-GM
 
-The local chatbot now has a `/codec` page with user-initiated links to the upstream
-FP16 ONNX encoder and decoder researched in
-[Realm of Quant](https://github.com/ljrseals-dev/realm-quant). These are 24 kHz
-audio-codec components, not text tokenizers or language-model encoders. The current
-integration exposes downloads and research context; it does **not** yet execute
-ONNX inference or process audio. See
-[the integration and evidence notes](docs/REALM_QUANT_CHATBOT_INTEGRATION.md).
+The decision-surface engine enumerates the configured factorial story space and writes reproducible results, manifests, CSV files, and SPSS syntax. Its rubric entries are encoded editorial judgments, not measured historical data. Rankings are research prompts, not proof of historical accuracy.
 
-**Research credit:** Realm of Quant preprint author: Lewis James Seals Jr.
-Requested research acknowledgement: Adonna Seals. Her specific role is
-not independently detailed in the preprint's current author-contributions section;
-the acknowledgement is included at the project maintainer's request and is not a
-claim of preprint co-authorship.
+Examples:
 
+    python -m muse_gm.engine variables --values
+    python -m muse_gm.engine check
+    python -m muse_gm.engine run --top 5
+    python -m muse_gm.engine sensitivity
 
-## Credits & Chicken-or-Egg Agreement
+For the research basis and mathematical derivation, see docs/paper/ and docs/MATH.md.
 
-Project credits and the provenance agreement are recorded in
-[docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md](docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md).
-The agreement treats concept and implementation as potentially reciprocal, relies on
-preserved evidence for attribution, and does not assume legal consent or assign
-unsupported individual roles.
+## Historical accuracy and source discipline
 
+Use Gangster Manga / Brute Genius to help directors, actors, and screenwriters locate and interrogate relevant historical context. Historical claims should be traceable to sources. Keep sourced fact, disputed claim, interpretation, and fictional invention distinct. Missing evidence must be marked for research; neither a model response nor an MUSE-GM score is a citation.
 
-## Forensic credits and Chicken-or-Egg agreement
+## Reproducibility and limits
 
-The project carries forward the requested credits for **Lewis James Seals Jr., Liliabet Diana Windsor, Laila Star Seals, and Lawrence James Seals**. The forensic governance prompt and working agreement are documented in [docs/FORENSIC_CHICKEN_OR_EGG_SYSTEM_PROMPT.md](docs/FORENSIC_CHICKEN_OR_EGG_SYSTEM_PROMPT.md) and [docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md](docs/CREDITS_AND_CHICKEN_EGG_AGREEMENT.md). They require evidence-led attribution, reciprocal concept/implementation provenance, preservation of originals, and clear limits on MIT and third-party institutional attribution. They do not imply Microsoft Research endorsement or a signed legal agreement.
+Each screenplay draft records the model repository, revision, seed, decoding settings, prompt SHA-256, and output. Greedy decoding improves repeatability, but identical output across different hardware, CUDA kernels, and library versions is not guaranteed. Check each model and dataset card for licensing and usage terms. Generated scripts require human historical, editorial, and rights review.
 
+The MUSE-GM rubric is an instrument of explicit judgments, not an oracle. SPSS exports, external model behavior, and production deployment must be validated in their target environments before being represented as production-ready.
 
-## Brute Genius addendum
+## Repository map
 
-A production-context draft of the [Brute Genius Software License — Hold Harmless, Limited Warranty, and Production Risk Addendum](docs/BRUTE_GENIUS_HOLD_HARMLESS_WARRANTY_ADDENDUM.md) is available for legal review. It is a template, not an executed agreement or legal advice; bracketed business and jurisdiction terms must be completed before signature.
+- muse_core/ — preserved Muse engine and Gangster Manga bridge
+- muse_gm/ — deterministic factorial engine and local research/chat application
+- muse_screenplay/ — Muse prompt compiler and Hugging Face generation adapter
+- tests/ — automated tests
+- docs/ — architecture, mathematics, research, governance, and implementation contract
+- results/, logs/, runs/ — generated research outputs and local run artifacts
+
+The implementation contract is docs/SCRIPT_WRITER_MASTER_PROMPT.md. It is explicitly identified as a reconstructed contract, not a verbatim export of an unavailable original master prompt.
+
+## Credits and provenance
+
+Preserve the existing MUSE-GM project attribution recorded in CITATION.cff and the governance documents. The project owner requests additional role-specific credit for **Lewis Seals and Angela Seals** for work enabling browser-based access to Hugging Face model weights. This concerns that workflow; it does not imply sole authorship of Script-Writer or ownership of third-party models.
+
+Model weights, model cards, datasets, and their licenses remain with their respective publishers. See LICENSE and the individual upstream terms.
