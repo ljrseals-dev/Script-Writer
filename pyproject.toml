@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "muse-screenplay"
+version = "0.1.0"
+description = "Screenplay generation module for Muse with an Artifact Harness."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "muse-screenplay contributors"}]
+dependencies = []
+
+[project.optional-dependencies]
+models = ["torch>=2.1", "transformers>=4.40", "accelerate>=0.30", "sentencepiece>=0.1.99"]
+datasets = ["datasets>=2.18"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+muse-screenplay = "muse_screenplay.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["muse_screenplay*"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+[tool.ruff]
+line-length = 100
+target-version = "py310"

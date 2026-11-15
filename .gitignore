@@ -6,21 +6,12 @@ dist/
 .venv/
 runs/
 .env
-.env.*
-!.env.example
 
-# Python tooling and local test artifacts
+*.py[cod]
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
-.coverage
-.coverage.*
-htmlcov/
-.tox/
-.nox/
-
-# Local editor and operating-system files
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
+data/*
+!data/.gitkeep
+models/
+*.bin
+*.safetensors
