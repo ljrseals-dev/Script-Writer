@@ -92,7 +92,7 @@ python -m unittest discover -v tests
 python -m muse_gm check
 ```
 
-If the checkout includes the packaged application extras, install the project using its declared extras. Do not assume optional language-model dependencies or model weights are present in a core-only installation.
+This checkout does not currently define a repository-root `pyproject.toml` or installable package extras. Install dependencies explicitly. NumPy is sufficient for the core engine and test suite. To use the optional Anthropic-backed local writing-room app, install `anthropic` separately and provide `ANTHROPIC_API_KEY` in the server process environment; the key is not written to the repository.
 
 ### Core commands
 
@@ -120,7 +120,17 @@ python -m muse_gm --help
 python -m muse_gm run --help
 ```
 
-Where `muse_screenplay` is present, its optional model extra and CLI are documented in [muse_screenplay/README.md](muse_screenplay/README.md). Model weights are not bundled; downloading from Hugging Face requires an explicit user action. Check model cards and licenses before use.
+### Local writing-room application
+
+```bash
+python -m pip install anthropic
+export ANTHROPIC_API_KEY='your-key'
+python -m muse_gm.app --host 127.0.0.1 --port 8484
+```
+
+Open `http://127.0.0.1:8484` in your browser. Keep the server bound to localhost unless you have separately reviewed and configured an appropriate deployment boundary.
+
+There is no `muse_screenplay/` package in this repository revision. The current writing-room application is `muse_gm/`; do not treat references to planned screenplay adapters as shipped functionality. Model weights are not bundled. Any future external model integration must require explicit user action and honor the model card and license.
 
 ## 5. Outputs and reproducibility
 
@@ -199,17 +209,18 @@ Do not describe the project as guaranteeing historical accuracy, eliminating cre
 
 ```text
 muse_core/          Muse narrative core and symbolic bridge
-muse_gm/            factorial engine, rubric data, prompts, and local application
-muse_screenplay/    optional screenplay prompt compiler and model adapter, where present
+muse_gm/            active factorial engine, rubric data, prompts, and local application
+Muse_GM/            legacy snapshot and historical dry-run records; not the active package
 tests/              engine, application, and baseline tests
 docs/               architecture, mathematics, research, governance, and roadmap
+IMPORT_SNAPSHOT_SHA256SUMS  checksum inventory for the imported archive, not current main
 results/            checked-in baseline and prototype outputs
-logs/               documented run records and audit material
-prototype/          retained early implementation material
+logs/               documented run records and audit material (including vintage-harness)
+prototype/          retained early implementation source
 .github/workflows/  continuous-integration configuration
 ```
 
-Consult the actual checkout for optional or in-development modules; a directory or feature described in a development branch is not necessarily present in every release.
+The active package is the lowercase `muse_gm/` directory. `Muse_GM/` is retained for historical reference and is not an installable package. The earlier `prototype/` source is retained separately as provenance; see [docs/REPOSITORY_HYGIENE.md](docs/REPOSITORY_HYGIENE.md) for the directory boundaries.
 
 ## 11. Research citation and provenance
 

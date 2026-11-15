@@ -3,7 +3,7 @@
 ## Needs your decision
 1. **Penalty terms.** The design notes add penalties (Void_Representation -0.15, Guilt_As_Excuse -0.15, Regret_Generation -0.20) and bonuses (Guilt_Earnedness, Institutional_Density, Guilt_Behavioral_Load). The engine only supports weights that sum to 1. Decide: subtract penalties from the total, or renormalize the whole objective.
 2. **Draft-only terms.** Guilt_Earnedness, Regret_Generation, Void_Representation and the Reconstruction Test describe a drafted page, not a configuration choice. Before a script exists they can only be proxied (for example a node x containment institutional-density table). Decide: proxies now, or evaluate them on drafts.
-3. **License.** None is included. Pick one (MIT, Apache-2.0, all rights reserved) before publishing.
+3. **License.** Resolved: the repository is distributed under MIT; see the root `LICENSE` file. Third-party assets and models retain their own terms.
 
 ## Planned work
 - New variables as config only: containment_geography (9), survivor_guilt sub-dimensions (loss, agency, public status, carrying behavior), forgiveness_arc/mode/wrong_type, what-if branch, temporal_gap, ghetto_register, implied_reader.
