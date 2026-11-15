@@ -52,17 +52,17 @@ DATASETS = {
 ALIASES = {"sample": "offline", "movie": "movies", "sum": "moviesum", "genre": "imsdb"}
 
 
-def _offline_dataset(limit, prompt_words, target_language, *, fallback_reason=None):
+def _offline_dataset(limit, prompt_words, target_language=None, *, fallback_reason=None):
     rows = []
     selected = OFFLINE_CASES[:limit if limit is not None else len(OFFLINE_CASES)]
     for case in selected:
         prompt = case["prompt"]
         if prompt_words is not None:
             prompt = " ".join(prompt.split()[:prompt_words])
-        rows.append({
-            "prompt": prompt,
-            "metadata": {**case["metadata"], "target_language": target_language},
-        })
+        metadata = dict(case["metadata"])
+        if target_language:
+            metadata["target_language"] = target_language
+        rows.append({"prompt": prompt, "metadata": metadata})
     if fallback_reason is None:
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.OFFLINE,
@@ -85,8 +85,6 @@ def _offline_dataset(limit, prompt_words, target_language, *, fallback_reason=No
 
 
 def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=None, *, target_language=None):
-    if not isinstance(target_language, str) or not target_language.strip():
-        raise ValueError("target_language is required for every screenplay evaluation/generation run")
     key = ALIASES.get(name.strip().lower(), name.strip().lower())
     if key == "offline":
         return _offline_dataset(limit, prompt_words, target_language)
@@ -127,10 +125,12 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
                 }
                 if genre:
                     metadata["genre"] = genre
+                if target_language:
+                    metadata["target_language"] = target_language
                 rows.append({
                     "prompt": prompt,
                     "expected": expected,
-                    "metadata": {**metadata, "target_language": target_language},
+                    "metadata": metadata,
                 })
         if not rows:
             raise ValueError("No non-empty screenplay rows matched the declared dataset field mapping")
