@@ -60,11 +60,14 @@ def build_script_artifact(model_key=None, *, max_length=None, temperature=None, 
 
     def generate(prompt="", **kwargs):
         generator = _generator(key, length, temp, probability)
+        target_language = kwargs.pop("target_language", None)
+        if not target_language:
+            raise ValueError("target_language is required; generation is never defaulted to English")
         overrides = {
             key: value for key, value in kwargs.items()
             if key in GenerationConfig.__dataclass_fields__
         }
-        return generator.generate(prompt, **overrides)
+        return generator.generate(prompt, target_language=target_language, **overrides)
 
     generator = _generator(key, length, temp, probability)
     tests = script_tests()
@@ -96,22 +99,23 @@ def build_script_artifact(model_key=None, *, max_length=None, temperature=None, 
 def build_summary_artifact(model_id="sshleifer/distilbart-cnn-12-6", *, attribution=None):
     attribution_record = _normalize_attribution(attribution)
 
-    def summarize(prompt="", max_length=130, min_length=30):
-        from transformers import pipeline
-        settings.apply_environment()
-        pipe = pipeline(
-            "summarization", model=model_id, device=settings.resolve_device(),
-            token=settings.hf_token,
-        )
-        return str(pipe(
-            prompt[:3000], max_length=max_length, min_length=min_length, do_sample=False,
-        )[0]["summary_text"]).strip()
+    if model_id != "sshleifer/distilbart-cnn-12-6":
+        raise ValueError("Only the registered built-in DistilBART summarizer is allowed")
+    def summarize(prompt="", target_language=None, max_length=130, min_length=30):
+        if not target_language:
+            raise ValueError("target_language is required; summarization is never defaulted to English")
+        generator = Generator("summary-distilbart", generation=GenerationConfig(
+            max_new_tokens=max_length, do_sample=False,
+        ))
+        return generator.generate(prompt[:3000], target_language=target_language, min_length=min_length)
 
     return load_harness().create_code_artifact(
         "script_summarizer", summarize, "prompt -> summary",
         tests=[TestCase("non_empty_summary", lambda value: len(str(value).split()) >= 5)],
         provenance={
             "hf_id": model_id, "task": "summarization",
+            "pytorch_weights_only": True, "remote_code_policy": "disabled",
+            "trust_remote_code": False, "use_safetensors": True,
             "attribution": attribution_record,
         },
         criteria_spec={"task": "summarization", "minimum_words": 5},
@@ -121,7 +125,7 @@ def build_default_pipeline(model_key=None, *, attribution=None):
     harness = load_harness()
     generator = build_script_artifact(model_key, attribution=attribution)
     gate = harness.create_code_artifact(
-        "format_gate", lambda prompt: prompt, "script -> script",
+        "format_gate", lambda prompt, **kwargs: prompt, "script -> script",
         tests=[TestCase(
             "scene_heading", lambda value: analyze_script(str(value)).scene_headings > 0,
             ConstraintLevel.WARN,
