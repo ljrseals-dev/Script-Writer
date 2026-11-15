@@ -40,7 +40,7 @@ run = harness.evaluate(artifact, load_eval_dataset("offline", limit=2, target_la
 ## Models and datasets
 
 Models: `sahilnagaralu/movie-script-generator`, `AventIQ-AI/gpt-2-movie-script-writter`, `pranikz/SLM-Movie-Script`.
-Datasets: `IsmaelMousa/movies`, `rohitsaxena/MovieSum`, `aneeshas/imsdb-genre-movie-scripts`.
+Datasets: `IsmaelMousa/movies` (1,172 rows; `Name`/`Script`; English; Apache-2.0), `rohitsaxena/MovieSum` (2,200 rows; `script`/`summary`; train/val/test; CC BY-NC 4.0), and `aneeshas/imsdb-genre-movie-scripts` (150 rows; five genre columns; license unverified). MovieSum language is unverified; IMSDb is source-implied English. Dataset-card declarations are not model-output evaluations.
 
 Check each model and dataset card for license and usage restrictions. Screenplays may be copyrighted; generated content needs human review. Heuristic scores are not measures of artistic quality or legal clearance. Preserve model, dataset, prompt, parameter, and evaluation provenance. Optimization is parameter search, not model fine-tuning; promotion remains a human decision.
 
