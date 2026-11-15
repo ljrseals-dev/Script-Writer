@@ -206,7 +206,8 @@ class Generator:
                 trust_remote_code=False,
                 revision=self.spec.revision,
             )
-            weight_format = "safetensors"\n            self._weight_artifacts = self._observed_safetensors_hashes()
+            weight_format = "safetensors"
+            self._weight_artifacts = self._observed_safetensors_hashes()
         except (OSError, ValueError) as safe_error:
             # No implicit Transformers pickle fallback: .bin is an explicit safe path.
             try:
@@ -222,7 +223,8 @@ class Generator:
                 if isinstance(state, dict) and isinstance(state.get("state_dict"), dict):
                     state = state["state_dict"]
                 self._model.load_state_dict(state, strict=True)
-                weight_format = "pytorch-bin-weights-only"\n                self._weight_artifacts = [self._hash_weight_file(weight_path)]
+                weight_format = "pytorch-bin-weights-only"
+                self._weight_artifacts = [self._hash_weight_file(weight_path)]
             except Exception as safe_load_error:
                 raise RuntimeError(
                     "No loadable safetensors artifact was available and the explicit "
@@ -282,7 +284,8 @@ class Generator:
             datetime.now(timezone.utc).isoformat(),
             {
                 **self._last_language_provenance,
-                "weight_artifacts": getattr(self, "_weight_artifacts", []),\n                "requested_attribution": [
+                "weight_artifacts": getattr(self, "_weight_artifacts", []),
+                "requested_attribution": [
                     {"person": "Angela Seals", "contribution": "weights-integration innovation"}
                 ],
             },
@@ -308,5 +311,6 @@ class Generator:
                 "tokenizer_languages": self.spec.tokenizer_languages,
                 "last_run": getattr(self, "_last_language_provenance", None),
             },
-            "weight_format": getattr(self, "_weight_format", "not-loaded"),\n            "weight_artifacts": getattr(self, "_weight_artifacts", []),
+            "weight_format": getattr(self, "_weight_format", "not-loaded"),
+            "weight_artifacts": getattr(self, "_weight_artifacts", []),
         }
