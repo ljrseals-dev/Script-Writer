@@ -1,0 +1,30 @@
+{
+  "format_version": 1,
+  "ledger": "Muse Screenplay Module provenance ledger",
+  "attribution": {
+    "requested_contributions": [
+      {
+        "person": "Angela Seals",
+        "contribution": "weights-integration innovation",
+        "status": "requested-attribution"
+      }
+    ],
+    "note": "This requested attribution is not by itself a legal determination of authorship, ownership, consent, or rights."
+  },
+  "model_loading_policy": {
+    "pytorch_weights_only": true,
+    "remote_code_policy": "disabled",
+    "trust_remote_code": false,
+    "preferred_weight_format": "safetensors",
+    "legacy_bin_policy": "explicit torch.load(map_location='cpu', weights_only=True) only"
+  },
+  "language_policy": {
+    "target_language_required": true,
+    "automatic_translation": false,
+    "output_fields": [
+      "requested",
+      "generated_in"
+    ],
+    "unverified_language_state": "unverified"
+  }
+}
