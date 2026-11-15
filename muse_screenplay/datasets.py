@@ -20,13 +20,14 @@ class DatasetSpec:
     expected_field: str | None = None
     split: str = "train"
     notes: str = ""
+    languages: dict = None
 
 DATASETS = {
-    "movies": DatasetSpec("movies", "IsmaelMousa/movies", "Script", notes="Full movie scripts."),
+    "movies": DatasetSpec("movies", "IsmaelMousa/movies", "Script", notes="Full movie scripts; language distribution unverified.", languages={"declared": ["unverified"], "verified": [], "verification_method": None}),
     "moviesum": DatasetSpec("moviesum", "rohitsaxena/MovieSum", "screenplay", "summary",
-                            notes="Screenplays and summaries."),
+                            notes="Screenplays and summaries; language distribution unverified.", languages={"declared": ["unverified"], "verified": [], "verification_method": None}),
     "imsdb": DatasetSpec("imsdb", "aneeshas/imsdb-genre-movie-scripts", "script",
-                         notes="Genre-labelled scripts."),
+                         notes="IMSDb source-implied English; not independently audited.", languages={"declared": ["en"], "verified": [], "verification_method": None}),
 }
 ALIASES = {"sample": "offline", "movie": "movies", "sum": "moviesum", "genre": "imsdb"}
 
@@ -37,7 +38,7 @@ def _offline_dataset(limit, prompt_words, *, fallback_reason=None):
         prompt = case["prompt"]
         if prompt_words is not None:
             prompt = " ".join(prompt.split()[:prompt_words])
-        rows.append({"prompt": prompt, "metadata": case["metadata"]})
+        rows.append({"prompt": prompt, "target_language": target_language, "metadata": case["metadata"]})
     if fallback_reason is None:
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.OFFLINE,
@@ -58,8 +59,8 @@ def _offline_dataset(limit, prompt_words, *, fallback_reason=None):
         name = "offline-fallback"
     return EvalDataset(name, rows, boundary=boundary)
 
-def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=None):
-    key = ALIASES.get(name.strip().lower(), name.strip().lower())
+def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=None, *, target_language=None):
+    if not isinstance(target_language, str) or not target_language.strip():\n        raise ValueError("target_language is required for every screenplay evaluation/generation run")\n    key = ALIASES.get(name.strip().lower(), name.strip().lower())
     if key == "offline":
         return _offline_dataset(limit, prompt_words)
     if key not in DATASETS:
@@ -88,7 +89,7 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
                 key: row[key] for key in ("genre", "genres", "title", "movie_name")
                 if key in row and row[key] is not None
             }
-            rows.append({"prompt": prompt, "expected": expected, "metadata": metadata})
+            rows.append({"prompt": prompt, "expected": expected, "target_language": target_language, "metadata": metadata})
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.REMOTE,
             dataset_id=spec.hf_id,
