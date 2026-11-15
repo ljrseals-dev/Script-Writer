@@ -13,7 +13,7 @@ authors = [{name = "muse-screenplay contributors"}]
 dependencies = []
 
 [project.optional-dependencies]
-models = ["torch>=2.1", "transformers>=4.40", "accelerate>=0.30", "sentencepiece>=0.1.99"]
+models = ["torch>=2.1", "transformers>=4.40", "accelerate>=0.30", "sentencepiece>=0.1.99", "langdetect>=1.0.9"]
 datasets = ["datasets>=2.18"]
 dev = ["pytest>=7.4", "ruff>=0.4"]
 
