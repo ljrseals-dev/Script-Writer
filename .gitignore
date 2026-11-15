@@ -6,10 +6,27 @@ dist/
 .venv/
 runs/
 .env
+.env.*
+!.env.example
 
-*.py[cod]
+# Python tooling and local test artifacts
 .pytest_cache/
+.mypy_cache/
 .ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Local editor and operating-system files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Screenplay module local assets and test tooling
+*.py[cod]
 data/*
 !data/.gitkeep
 models/
