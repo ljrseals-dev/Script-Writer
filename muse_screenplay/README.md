@@ -70,7 +70,7 @@ python scripts/integration_check.py
 
 The loader applies two independent controls: (A) explicit PyTorch deserialization uses `torch.load(..., map_location="cpu", weights_only=True)`; (B) Transformers uses `trust_remote_code=False` and rejects remote `auto_map` architectures. Safetensors is preferred with `use_safetensors=True`. A legacy `.bin` fallback is explicit and must pass through `torch_load_safe()`; there is no unsafe fallback. A model requiring remote code is not loaded.
 
-These controls do not validate tensor correctness, source authenticity, output quality, licensing, bias, or copyright. SHA-256 checks byte identity only.
+These controls do not validate tensor correctness, source authenticity, output quality, licensing, bias, or copyright. Observed SHA-256 values fingerprint downloaded bytes. They authenticate integrity only when compared with a trusted expected digest; they do not establish source authenticity, authorship, or rights.
 
 ## Language contract
 
