@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "script-writer-muse"
+version = "0.2.0"
+description = "Muse deterministic story engine with Brute Genius research and optional Hugging Face screenplay drafting"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+models = ["torch>=2.1", "transformers>=4.40", "accelerate>=0.30", "sentencepiece>=0.1.99"]
+app = ["anthropic>=0.25"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+muse-screenplay = "muse_screenplay.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["muse_core*", "muse_gm*", "muse_screenplay*"]
+
+[tool.setuptools.package-data]
+muse_core = ["themes/**/*.json"]
+muse_gm = ["data/*.json", "static/*.html", "prompts/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
