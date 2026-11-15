@@ -681,7 +681,7 @@ These controls are orthogonal and MUST be recorded separately in provenance:
 
 Prefer Safetensors with `use_safetensors=True`. A legacy `.bin` fallback is permitted only as a separately implemented, explicit path that calls the single audited `torch_load_safe()` wrapper, loads a state dictionary into a trusted built-in architecture, and records `weight_format: pytorch-bin-weights-only`. Do not allow Transformers to silently fall back to pickle deserialization.
 
-If a model requires remote code, record `architecture_status: requires-remote-code` and `load_status: not-loaded`; fail closed. A digest establishes artifact byte integrity, not model correctness, provenance, safety, or authorship. `weights_only=True` does not validate numeric tensor values or artifact origin. `trust_remote_code=False` does not establish that an architecture is suitable. Neither control endorses output quality, license compliance, bias, or copyright status.
+If a model requires remote code, record `architecture_status: requires-remote-code` and `load_status: not-loaded`; fail closed. An observed digest identifies artifact bytes; integrity is verified only by comparison with a trusted expected digest. A digest does not establish model correctness, source provenance, safety, or authorship. `weights_only=True` does not validate numeric tensor values or artifact origin. `trust_remote_code=False` does not establish that an architecture is suitable. Neither control endorses output quality, license compliance, bias, or copyright status.
 
 ## 18.2 Language Coverage Is Declared Before It Is Claimed
 
