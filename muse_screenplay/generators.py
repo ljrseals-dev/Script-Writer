@@ -87,6 +87,46 @@ class Generator:
     def task(self):
         return self.spec.task
 
+    @staticmethod
+    def _hash_weight_file(path):
+        digest = hashlib.sha256()
+        with open(path, "rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return {
+            "filename": os.path.basename(path),
+            "sha256": digest.hexdigest(),
+            "bytes": os.path.getsize(path),
+        }
+
+    def _observed_safetensors_hashes(self):
+        """Record observed bytes for the loaded Safetensors artifact(s), not source authenticity."""
+        try:
+            from huggingface_hub import hf_hub_download
+            from huggingface_hub.errors import EntryNotFoundError
+            try:
+                path = hf_hub_download(
+                    self.spec.hf_id, filename="model.safetensors",
+                    revision=self.spec.revision,
+                )
+                return [self._hash_weight_file(path)]
+            except EntryNotFoundError:
+                index_path = hf_hub_download(
+                    self.spec.hf_id, filename="model.safetensors.index.json",
+                    revision=self.spec.revision,
+                )
+                with open(index_path, encoding="utf-8") as stream:
+                    index = json.load(stream)
+                shards = sorted(set(index.get("weight_map", {}).values()))
+                return [
+                    self._hash_weight_file(hf_hub_download(
+                        self.spec.hf_id, filename=shard, revision=self.spec.revision
+                    ))
+                    for shard in shards
+                ]
+        except Exception as exc:
+            return [{"hash_status": "unavailable", "reason": str(exc)}]
+
     def _record_remote_code_rejection(self, source):
         from .governance import GovernanceLedger
         ledger = GovernanceLedger(
@@ -166,7 +206,7 @@ class Generator:
                 trust_remote_code=False,
                 revision=self.spec.revision,
             )
-            weight_format = "safetensors"
+            weight_format = "safetensors"\n            self._weight_artifacts = self._observed_safetensors_hashes()
         except (OSError, ValueError) as safe_error:
             # No implicit Transformers pickle fallback: .bin is an explicit safe path.
             try:
@@ -182,7 +222,7 @@ class Generator:
                 if isinstance(state, dict) and isinstance(state.get("state_dict"), dict):
                     state = state["state_dict"]
                 self._model.load_state_dict(state, strict=True)
-                weight_format = "pytorch-bin-weights-only"
+                weight_format = "pytorch-bin-weights-only"\n                self._weight_artifacts = [self._hash_weight_file(weight_path)]
             except Exception as safe_load_error:
                 raise RuntimeError(
                     "No loadable safetensors artifact was available and the explicit "
@@ -242,7 +282,7 @@ class Generator:
             datetime.now(timezone.utc).isoformat(),
             {
                 **self._last_language_provenance,
-                "requested_attribution": [
+                "weight_artifacts": getattr(self, "_weight_artifacts", []),\n                "requested_attribution": [
                     {"person": "Angela Seals", "contribution": "weights-integration innovation"}
                 ],
             },
@@ -268,5 +308,5 @@ class Generator:
                 "tokenizer_languages": self.spec.tokenizer_languages,
                 "last_run": getattr(self, "_last_language_provenance", None),
             },
-            "weight_format": getattr(self, "_weight_format", "not-loaded"),
+            "weight_format": getattr(self, "_weight_format", "not-loaded"),\n            "weight_artifacts": getattr(self, "_weight_artifacts", []),
         }
