@@ -1,7 +1,9 @@
-"""Offline-first prompt datasets with explicit language and provenance boundaries."""
+"""Offline-first screenplay datasets with explicit field, language, and provenance boundaries."""
 from dataclasses import dataclass
+
 from .harness.dataset import EvalDataset
 from .governance import DatasetProvenance, EvalBoundary
+
 
 OFFLINE_CASES = [
     {"prompt": "INT. DINER - NIGHT\n\nA tired waitress wipes the counter. MARCUS stares at a napkin.\n\nMARCUS:", "metadata": {"genre": "drama"}},
@@ -21,23 +23,29 @@ class DatasetSpec:
     split: str = "train"
     notes: str = ""
     languages: dict | None = None
+    genre_fields: tuple[str, ...] = ()
+    license_status: str = "unverified"
 
 
 DATASETS = {
     "movies": DatasetSpec(
-        "movies", "IsmaelMousa/movies", None,
-        notes="Dataset-card field mapping and language distribution require verification.",
-        languages={"declared": ["unverified"], "verified": [], "verification_method": None},
+        "movies", "IsmaelMousa/movies", "Script",
+        notes="1,172 English movie scripts; dataset card declares English and Apache-2.0.",
+        languages={"declared": ["en"], "verified": [], "verification_method": None},
+        license_status="apache-2.0 (dataset-card declared)",
     ),
     "moviesum": DatasetSpec(
-        "moviesum", "rohitsaxena/MovieSum", "screenplay", "summary",
-        notes="Screenplays and summaries; language distribution unverified.",
+        "moviesum", "rohitsaxena/MovieSum", "script", "summary",
+        notes="2,200 XML-structured screenplays and summaries; train/val/test splits; CC BY-NC 4.0.",
         languages={"declared": ["unverified"], "verified": [], "verification_method": None},
+        license_status="cc-by-nc-4.0",
     ),
     "imsdb": DatasetSpec(
-        "imsdb", "aneeshas/imsdb-genre-movie-scripts", "script",
-        notes="IMSDb source-implied English; not independently audited.",
+        "imsdb", "aneeshas/imsdb-genre-movie-scripts", None,
+        notes="150 rows arranged in five genre-specific columns; card says more information needed.",
         languages={"declared": ["en"], "verified": [], "verification_method": None},
+        genre_fields=("Action", "Horror", "Sci-Fi", "Comedy", "Drama"),
+        license_status="unverified",
     ),
 }
 ALIASES = {"sample": "offline", "movie": "movies", "sum": "moviesum", "genre": "imsdb"}
@@ -84,11 +92,6 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
     if key not in DATASETS:
         raise KeyError(f"Unknown dataset {name!r}")
     spec = DATASETS[key]
-    if spec.prompt_field is None:
-        return _offline_dataset(
-            limit, prompt_words, target_language,
-            fallback_reason="dataset field mapping is unverified; remote rows were not interpreted",
-        )
     try:
         from datasets import load_dataset
     except ImportError as exc:
@@ -99,25 +102,37 @@ def load_eval_dataset(name="offline", limit=5, prompt_chars=1200, prompt_words=N
             dataset = dataset.select(range(min(limit, len(dataset))))
         rows = []
         for row in dataset:
-            prompt = str(row.get(spec.prompt_field, "") or "")
-            if prompt_words is not None:
-                prompt = " ".join(prompt.split()[:prompt_words])
-            if prompt_chars is not None:
-                prompt = prompt[:prompt_chars]
-            expected = (
-                str(row.get(spec.expected_field, "") or "")[:2000] or None
-                if spec.expected_field else None
-            )
-            metadata = {
-                field: row[field]
-                for field in ("genre", "genres", "title", "movie_name")
-                if field in row and row[field] is not None
-            }
-            rows.append({
-                "prompt": prompt,
-                "expected": expected,
-                "metadata": {**metadata, "target_language": target_language},
-            })
+            candidates = []
+            if spec.prompt_field:
+                candidates.append((None, row.get(spec.prompt_field)))
+            for genre in spec.genre_fields:
+                candidates.append((genre, row.get(genre)))
+            for genre, raw_prompt in candidates:
+                prompt = str(raw_prompt or "").strip()
+                if not prompt:
+                    continue
+                if prompt_words is not None:
+                    prompt = " ".join(prompt.split()[:prompt_words])
+                if prompt_chars is not None:
+                    prompt = prompt[:prompt_chars]
+                expected = (
+                    str(row.get(spec.expected_field, "") or "")[:2000] or None
+                    if spec.expected_field else None
+                )
+                metadata = {
+                    field: row[field]
+                    for field in ("genre", "genres", "title", "movie_name", "Name")
+                    if field in row and row[field] is not None
+                }
+                if genre:
+                    metadata["genre"] = genre
+                rows.append({
+                    "prompt": prompt,
+                    "expected": expected,
+                    "metadata": {**metadata, "target_language": target_language},
+                })
+        if not rows:
+            raise ValueError("No non-empty screenplay rows matched the declared dataset field mapping")
         boundary = EvalBoundary(
             dataset_source=DatasetProvenance.REMOTE,
             dataset_id=spec.hf_id,
@@ -132,8 +147,13 @@ def dataset_catalog():
     return {
         "offline": {"hf_id": None, "notes": f"{len(OFFLINE_CASES)} built-in prompt seeds."},
         **{
-            key: {"hf_id": spec.hf_id, "notes": spec.notes, "languages": spec.languages,
-                  "field_mapping_verified": spec.prompt_field is not None}
+            key: {
+                "hf_id": spec.hf_id,
+                "notes": spec.notes,
+                "languages": spec.languages,
+                "field_mapping_verified": bool(spec.prompt_field or spec.genre_fields),
+                "license_status": spec.license_status,
+            }
             for key, spec in DATASETS.items()
         },
     }
