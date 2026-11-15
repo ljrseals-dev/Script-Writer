@@ -28,11 +28,14 @@ class ScreenplayPipeline:
         )
         script = str(result.value or "")
         language = getattr(self.artifact.fn, "_last_language_provenance", None) or {
-            "requested": target_language, "generated_in": "unverified",
-            "language_mismatch": False,
+            "requested": target_language,
+            "generated_in": "unverified",
+            "language_mismatch": None,
         }
         output = PipelineResult(
-            prompt, script, analyze_script(script).to_dict(),
+            prompt,
+            script,
+            analyze_script(script).to_dict(),
             stages={
                 "passed": result.passed,
                 "duration_ms": round(result.duration_ms, 2),
@@ -57,7 +60,7 @@ class ScreenplayPipeline:
 def build_genre_conditioned_prompt(prompt, genre, tone=None):
     return (
         f"[GENRE: {genre.upper()}]"
-        + (f" [TONE: {tone.upper()}]" if tone else "")
+        + (f" [TONE: {tone.upper()}" if tone else "")
         + "\n\n"
         + prompt
     )
@@ -72,7 +75,13 @@ def build_screenplay_pipeline(model_key=None, *, genre=None, tone=None):
         base = artifact.fn
 
         def genre_wrapper(prompt="", **kwargs):
-            output = base(prompt=build_genre_conditioned_prompt(prompt, genre, tone), **kwargs)\n            genre_wrapper._last_language_provenance = getattr(base, "_last_language_provenance", None)\n            return output
+            output = base(
+                prompt=build_genre_conditioned_prompt(prompt, genre, tone), **kwargs
+            )
+            genre_wrapper._last_language_provenance = getattr(
+                base, "_last_language_provenance", None
+            )
+            return output
 
         artifact.fn = genre_wrapper
         artifact.evaluator = composite_evaluator(
